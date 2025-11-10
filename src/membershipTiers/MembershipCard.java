@@ -1,6 +1,6 @@
+package membershipTiers;
 import java.time.LocalDate;
 
-import membershipTiers.MembershipTier;
 
 public class MembershipCard {
     private LocalDate dateStart;
