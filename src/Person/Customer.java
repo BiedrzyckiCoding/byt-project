@@ -2,6 +2,7 @@ package Person;
 
 import MembershipTiers.MembershipCard;
 import MembershipTiers.MembershipTier;
+import Validation.ValidationUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +19,14 @@ public class Customer extends Person {
                     String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard,
                     MembershipCard membershipCard, MembershipTier membershipTier) {
         super(name, address, surname, email, birthDate);
+
+        ValidationUtil.notNull(accountName, "accountName");
+        ValidationUtil.notFuture(accountCreatedDate, "accountCreatedDate");
+        ValidationUtil.nonNegative(totalSpent, "totalSpent");
+        ValidationUtil.notNull(debitCard, "debitCard");
+        ValidationUtil.notNull(membershipCard, "membershipCard");
+        ValidationUtil.notNull(membershipTier, "membershipTier");
+
         this.accountName = accountName;
         this.accountCreatedDate = accountCreatedDate;
         this.totalSpent = totalSpent;

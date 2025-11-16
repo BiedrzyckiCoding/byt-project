@@ -1,4 +1,7 @@
 package MembershipTiers;
+
+import Validation.ValidationUtil;
+
 import java.time.LocalDate;
 
 
@@ -7,13 +10,14 @@ public class MembershipCard {
     private LocalDate dateEnd;
 
     public MembershipCard(LocalDate dateStart, LocalDate dateEnd) {
+        ValidationUtil.notFuture(dateStart, "dateStart");
+        ValidationUtil.dateOrder(dateStart, dateEnd);
+
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
     }
 
-    public LocalDate getDateStart() {
-        return dateStart;
-    }
+    public LocalDate getDateStart() { return dateStart; }
 
     public void setDateStart(LocalDate dateStart) {
         this.dateStart = dateStart;

@@ -1,5 +1,7 @@
 package Person;
 
+import Validation.ValidationUtil;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,6 +14,12 @@ public abstract class Person {
     private int age;
 
     public Person(String name, List<String> address, String surname, String email, LocalDate birthDate) {
+        ValidationUtil.notNull(name, "name");
+        ValidationUtil.emptyList(address, "address");
+        ValidationUtil.notNull(surname, "surname");
+        ValidationUtil.notNull(email, "email");
+        ValidationUtil.notFuture(birthDate, "birthDate");
+
         this.name = name;
         this.address = address;
         this.surname = surname;

@@ -3,8 +3,10 @@ package Order;
 import Enums.DeliveryType;
 import Enums.OrderStatus;
 import Person.Customer;
+import Validation.ValidationUtil;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 public class Order {
@@ -20,6 +22,16 @@ public class Order {
 
     public Order(List<ItemQuantityInOrder> items, Customer customer, double finalPrice, DeliveryType deliveryType, long paymentTimer,
                  LocalDate timestamp, double sumPrice, double discountApplied, OrderStatus status) {
+        ValidationUtil.notNull(status, "status");
+        ValidationUtil.nonNegative(discountApplied, "discountApplied");
+        ValidationUtil.nonNegative(sumPrice, "sumPrice");
+        ValidationUtil.notFuture(timestamp, "timestamp");
+        ValidationUtil.nonNegative(paymentTimer, "paymentTimer");
+        ValidationUtil.notNull(deliveryType, "deliveryType");
+        ValidationUtil.nonNegative(finalPrice, "finalPrice");
+        ValidationUtil.notNull(customer, "customer");
+        ValidationUtil.notNull(items, "items");
+
         this.items = items;
         this.customer = customer;
         this.finalPrice = sumPrice - (1 - discountApplied/100);

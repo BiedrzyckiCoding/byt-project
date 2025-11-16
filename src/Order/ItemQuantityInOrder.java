@@ -1,12 +1,16 @@
 package Order;
 
 import Clothing.Item;
+import Validation.ValidationUtil;
 
 public class ItemQuantityInOrder {
     private Item item;
     private double quantity;
 
     public ItemQuantityInOrder(Item item, double quantity) {
+        ValidationUtil.notNull(item, "item");
+        ValidationUtil.nonNegative(quantity, "quantity");
+
         this.item = item;
         this.quantity = quantity;
     }

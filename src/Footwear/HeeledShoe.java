@@ -1,5 +1,7 @@
 package Footwear;
 
+import Validation.ValidationUtil;
+
 import java.util.List;
 
 public class HeeledShoe extends Footwear {
@@ -7,6 +9,9 @@ public class HeeledShoe extends Footwear {
 
     public HeeledShoe(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, double heelHeight) {
         super(name, brand, price, stockQuantity, material, color);
+
+        ValidationUtil.nonNegative(heelHeight, "heelHeight");
+
         this.heelHeight = heelHeight;
     }
 

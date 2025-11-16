@@ -1,5 +1,7 @@
 package Person;
 
+import Validation.ValidationUtil;
+
 import java.time.LocalDate;
 
 public class DebitCard {
@@ -8,6 +10,10 @@ public class DebitCard {
     private String securityCode;
 
     public DebitCard(String cardNumber, LocalDate expirationDate, String securityCode) {
+        ValidationUtil.notNull(cardNumber, "cardNumber");
+        ValidationUtil.notNull(expirationDate, "expirationDate");
+        ValidationUtil.notNull(securityCode, "securityCode");
+
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
         this.securityCode = securityCode;

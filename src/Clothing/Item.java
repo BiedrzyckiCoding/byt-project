@@ -1,5 +1,7 @@
 package Clothing;
 
+import Validation.ValidationUtil;
+
 import java.util.List;
 
 public class Item {
@@ -11,6 +13,13 @@ public class Item {
     private List<String> color;
 
     public Item(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color) {
+        ValidationUtil.notEmpty(name, "name");
+        ValidationUtil.notEmpty(brand, "brand");
+        ValidationUtil.nonNegative(price, "price");
+        ValidationUtil.nonNegative(stockQuantity, "stockQuantity");
+        ValidationUtil.emptyList(material, "material");
+        ValidationUtil.emptyList(color, "color");
+
         this.name = name;
         this.brand = brand;
         this.price = price;
