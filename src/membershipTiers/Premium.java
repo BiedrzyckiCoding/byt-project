@@ -1,7 +1,9 @@
 package membershipTiers;
 public class Premium extends MembershipTier {
-    public Premium() {
-        discount = 20;
-        price = 70;
+    private static final int DISCOUNT = 20;
+    private static final double PRICE = 70;
+
+    public Premium(double discount, double price) {
+        super(discount, price);
     }
 }
