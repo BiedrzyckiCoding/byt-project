@@ -1,6 +1,7 @@
 package Clothing;
 
 import Enums.ClothingSize;
+import Validation.ValidationUtil;
 
 import java.util.List;
 
@@ -10,6 +11,10 @@ public class Trousers extends ClothingItem {
 
     public Trousers(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, ClothingSize clothingSize, double waistLength, double legLength) {
         super(name, brand, price, stockQuantity, material, color, clothingSize);
+
+        ValidationUtil.positive(waistLength, "waistLength");
+        ValidationUtil.positive(legLength, "legLength");
+
         this.waistLength = waistLength;
         this.legLength = legLength;
     }

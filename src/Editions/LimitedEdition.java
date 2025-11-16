@@ -1,6 +1,7 @@
 package Editions;
 
 import Clothing.Item;
+import Validation.ValidationUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,6 +12,10 @@ public class LimitedEdition extends Item {
 
     public LimitedEdition(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, LocalDate releaseDate, int totalProduced) {
         super(name, brand, price, stockQuantity, material, color);
+
+        ValidationUtil.notFuture(releaseDate, "releaseDate");
+        ValidationUtil.positive(totalProduced, "totalProduced");
+
         this.releaseDate = releaseDate;
         this.totalProduced = totalProduced;
     }

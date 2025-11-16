@@ -1,9 +1,16 @@
 package MembershipTiers;
+
+import Validation.ValidationUtil;
+
 public abstract class MembershipTier {
-    private final double discount; // percent
+    private final double discount;
     private final double price;
 
     public MembershipTier(double discount, double price) {
+
+        ValidationUtil.nonNegative(discount, "discount");
+        ValidationUtil.nonNegative(price, "price");
+
         this.discount = discount;
         this.price = price;
     }

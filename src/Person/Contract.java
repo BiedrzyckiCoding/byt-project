@@ -1,6 +1,7 @@
 package Person;
 
 import Enums.ContractType;
+import Validation.ValidationUtil;
 
 import java.time.LocalDate;
 
@@ -10,6 +11,10 @@ public class Contract {
     private LocalDate employmentDueDate;
 
     public Contract(ContractType type, LocalDate employmentDate, LocalDate employmentDueDate) {
+        ValidationUtil.notNull(type, "type");
+        ValidationUtil.notFuture(employmentDate, "employmentDate");
+        ValidationUtil.dateOrder(employmentDate, employmentDueDate);
+
         this.type = type;
         this.employmentDate = employmentDate;
         this.employmentDueDate = employmentDueDate;

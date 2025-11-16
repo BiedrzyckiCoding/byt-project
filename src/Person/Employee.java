@@ -1,5 +1,7 @@
 package Person;
 
+import Validation.ValidationUtil;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,6 +14,12 @@ public class Employee extends Person {
     public Employee(String name, List<String> address, String surname, String email,
                     LocalDate birthDate, double salary, int itemsSold, Contract contract, List<Employee> subordinates) {
         super(name, address, surname, email, birthDate);
+
+        ValidationUtil.nonNegative(salary, "salary");
+        ValidationUtil.nonNegative(itemsSold, "itemsSold");
+        ValidationUtil.notNull(contract, "contract");
+        ValidationUtil.notNull(subordinates, "subordinates");
+
         this.salary = salary;
         this.itemsSold = itemsSold;
         this.contract = contract;

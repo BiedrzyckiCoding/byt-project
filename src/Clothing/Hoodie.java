@@ -2,6 +2,7 @@ package Clothing;
 
 
 import Enums.ClothingSize;
+import Validation.ValidationUtil;
 
 import java.util.List;
 
