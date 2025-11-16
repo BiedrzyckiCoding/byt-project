@@ -1,5 +1,8 @@
+package Order;
+
 import Enums.DeliveryType;
 import Enums.OrderStatus;
+import Person.Customer;
 
 import java.time.LocalDate;
 import java.util.List;

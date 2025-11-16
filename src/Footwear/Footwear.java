@@ -1,6 +1,6 @@
-package footwear;
+package Footwear;
 
-import clothing.Item;
+import Clothing.Item;
 
 import java.util.List;
 

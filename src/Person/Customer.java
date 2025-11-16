@@ -1,5 +1,7 @@
-import membershipTiers.MembershipCard;
-import membershipTiers.MembershipTier;
+package Person;
+
+import MembershipTiers.MembershipCard;
+import MembershipTiers.MembershipTier;
 
 import java.time.LocalDate;
 import java.util.List;

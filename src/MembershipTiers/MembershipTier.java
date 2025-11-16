@@ -1,4 +1,4 @@
-package membershipTiers;
+package MembershipTiers;
 public abstract class MembershipTier {
     private final double discount; // percent
     private final double price;

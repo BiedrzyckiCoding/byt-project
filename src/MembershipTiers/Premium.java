@@ -1,4 +1,4 @@
-package membershipTiers;
+package MembershipTiers;
 public class Premium extends MembershipTier {
     private static final int DISCOUNT = 20;
     private static final double PRICE = 70;

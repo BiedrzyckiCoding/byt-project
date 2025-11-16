@@ -1,6 +1,6 @@
-package editions;
+package Editions;
 
-import clothing.Item;
+import Clothing.Item;
 
 import java.time.LocalDate;
 import java.util.List;

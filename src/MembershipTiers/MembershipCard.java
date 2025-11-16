@@ -1,4 +1,4 @@
-package membershipTiers;
+package MembershipTiers;
 import java.time.LocalDate;
 
 

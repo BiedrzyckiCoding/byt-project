@@ -1,4 +1,4 @@
-package clothing;
+package Clothing;
 
 
 import Enums.ClothingSize;

@@ -1,4 +1,4 @@
-package footwear;
+package Footwear;
 
 import java.util.List;
 

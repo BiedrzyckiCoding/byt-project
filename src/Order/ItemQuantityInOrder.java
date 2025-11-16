@@ -1,4 +1,6 @@
-import clothing.Item;
+package Order;
+
+import Clothing.Item;
 
 public class ItemQuantityInOrder {
     private Item item;
