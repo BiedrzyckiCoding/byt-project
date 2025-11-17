@@ -1,11 +1,21 @@
 package Person;
 
 import Enums.ContractType;
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Contract {
+public class Contract implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static List<Contract> extent = new ArrayList<>();
+
     private ContractType type;
     private LocalDate employmentDate;
     private LocalDate employmentDueDate;
@@ -18,6 +28,8 @@ public class Contract {
         this.type = type;
         this.employmentDate = employmentDate;
         this.employmentDueDate = employmentDueDate;
+
+        addToExtent(this);
     }
 
     public ContractType getType() {
@@ -42,5 +54,18 @@ public class Contract {
 
     public void setEmploymentDueDate(LocalDate employmentDueDate) {
         this.employmentDueDate = employmentDueDate;
+    }
+
+    private static void addToExtent(Contract c) {
+        if (c == null) throw new IllegalArgumentException("Contract cannot be null");
+        extent.add(c);
+    }
+
+    public static List<Contract> getExtent() {
+        return new ArrayList<>(extent);
+    }
+
+    public static void setExtent(List<Contract> loaded) {
+        extent = new ArrayList<>(loaded);
     }
 }

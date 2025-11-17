@@ -3,13 +3,21 @@ package Order;
 import Enums.DeliveryType;
 import Enums.OrderStatus;
 import Person.Customer;
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Order {
+public class Order implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static List<Order> extent = new ArrayList<>();
+
     private OrderStatus status;
     private double discountApplied;
     private double sumPrice;
@@ -41,6 +49,8 @@ public class Order {
         this.sumPrice = sumPrice;
         this.discountApplied = discountApplied;
         this.status = status;
+
+        addToExtent(this);
     }
 
     public OrderStatus getStatus() {
@@ -113,6 +123,19 @@ public class Order {
 
     public void setItems(List<ItemQuantityInOrder> items) {
         this.items = items;
+    }
+
+    private static void addToExtent(Order o) {
+        if (o == null) throw new IllegalArgumentException("Order cannot be null");
+        extent.add(o);
+    }
+
+    public static List<Order> getExtent() {
+        return new ArrayList<>(extent);
+    }
+
+    public static void setExtent(List<Order> loaded) {
+        extent = new ArrayList<>(loaded);
     }
 
     public void viewOrder() {

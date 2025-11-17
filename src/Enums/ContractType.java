@@ -1,7 +1,7 @@
 package Enums;
 
 public enum ContractType {
-    Commission,
-    Employment,
-    SpecificWwork;
+    COMMISSION,
+    EMPLOYMENT,
+    SPECIFIC_WORK;
 }

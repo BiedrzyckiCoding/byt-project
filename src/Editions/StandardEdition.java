@@ -1,7 +1,7 @@
 package Editions;
 
 import Clothing.Item;
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
 import java.time.LocalDate;
 import java.util.List;

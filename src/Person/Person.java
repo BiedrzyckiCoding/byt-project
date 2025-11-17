@@ -1,11 +1,12 @@
 package Person;
 
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public abstract class Person {
+public abstract class Person implements Serializable {
     private String name;
     private List<String> address;
     private String surname;

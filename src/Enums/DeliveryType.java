@@ -1,6 +1,6 @@
 package Enums;
 
 public enum DeliveryType {
-    HomeDelivery,
-    StorePickup;
+    HOME_DELIVERY,
+    STORE_PICKUP;
 }
