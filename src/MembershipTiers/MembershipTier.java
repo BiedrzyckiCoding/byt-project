@@ -1,8 +1,10 @@
 package MembershipTiers;
 
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
-public abstract class MembershipTier {
+import java.io.Serializable;
+
+public abstract class MembershipTier implements Serializable {
     private final double discount;
     private final double price;
 

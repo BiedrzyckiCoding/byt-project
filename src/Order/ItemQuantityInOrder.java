@@ -1,9 +1,11 @@
 package Order;
 
 import Clothing.Item;
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
-public class ItemQuantityInOrder {
+import java.io.Serializable;
+
+public class ItemQuantityInOrder implements Serializable {
     private Item item;
     private double quantity;
 

@@ -2,12 +2,20 @@ package Person;
 
 import MembershipTiers.MembershipCard;
 import MembershipTiers.MembershipTier;
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serial;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Customer extends Person {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static List<Customer> extent = new ArrayList<>();
+
     private String accountName;
     private LocalDate accountCreatedDate;
     private double totalSpent;
@@ -33,6 +41,8 @@ public class Customer extends Person {
         this.debitCard = debitCard;
         this.membershipCard = membershipCard;
         this.membershipTier = membershipTier;
+
+        addToExtent(this);
     }
 
     public String getAccountName() {
@@ -81,6 +91,19 @@ public class Customer extends Person {
 
     public void setMembershipTier(MembershipTier membershipTier) {
         this.membershipTier = membershipTier;
+    }
+
+    private static void addToExtent(Customer c) {
+        if (c == null) throw new IllegalArgumentException("Customer cannot be null");
+        extent.add(c);
+    }
+
+    public static List<Customer> getExtent() {
+        return new ArrayList<>(extent);
+    }
+
+    public static void setExtent(List<Customer> loaded) {
+        extent = new ArrayList<>(loaded);
     }
 
     public void updateAccountDetails() {

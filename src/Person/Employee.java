@@ -1,11 +1,19 @@
 package Person;
 
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serial;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Employee extends Person {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static List<Employee> extent = new ArrayList<>();
+
     private double salary;
     private int itemsSold;
     private Contract contract;
@@ -24,6 +32,8 @@ public class Employee extends Person {
         this.itemsSold = itemsSold;
         this.contract = contract;
         this.subordinates = subordinates;
+
+        addToExtent(this);
     }
 
     public double getSalary() {
@@ -56,6 +66,19 @@ public class Employee extends Person {
 
     public void setSubordinates(List<Employee> subordinates) {
         this.subordinates = subordinates;
+    }
+
+    private static void addToExtent(Employee e) {
+        if (e == null) throw new IllegalArgumentException("Employee cannot be null");
+        extent.add(e);
+    }
+
+    public static List<Employee> getExtent() {
+        return new ArrayList<>(extent);
+    }
+
+    public static void setExtent(List<Employee> loaded) {
+        extent = new ArrayList<>(loaded);
     }
 
     public void addNewEmployee() {

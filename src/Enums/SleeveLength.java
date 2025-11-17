@@ -1,7 +1,7 @@
 package Enums;
 
 public enum SleeveLength {
-    Long,
-    Medium,
-    Short
+    LONG,
+    MEDIUM,
+    SHORT
 }

@@ -1,11 +1,21 @@
 package MembershipTiers;
 
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class MembershipCard {
+public class MembershipCard implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static List<MembershipCard> extent = new ArrayList<>();
+
     private LocalDate dateStart;
     private LocalDate dateEnd;
 
@@ -15,6 +25,8 @@ public class MembershipCard {
 
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
+
+        addToExtent(this);
     }
 
     public LocalDate getDateStart() { return dateStart; }
@@ -29,5 +41,18 @@ public class MembershipCard {
 
     public void setDateEnd(LocalDate dateEnd) {
         this.dateEnd = dateEnd;
+    }
+
+    private static void addToExtent(MembershipCard mc) {
+        if (mc == null) throw new IllegalArgumentException("MembershipCard cannot be null");
+        extent.add(mc);
+    }
+
+    public static List<MembershipCard> getExtent() {
+        return new ArrayList<>(extent);
+    }
+
+    public static void setExtent(List<MembershipCard> loaded) {
+        extent = new ArrayList<>(loaded);
     }
 }

@@ -1,10 +1,11 @@
 package Clothing;
 
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Item {
+public class Item implements Serializable {
     private String name;
     private String brand;
     private double price;

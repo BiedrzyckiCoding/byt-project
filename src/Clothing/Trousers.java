@@ -1,11 +1,19 @@
 package Clothing;
 
 import Enums.ClothingSize;
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serial;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Trousers extends ClothingItem {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static List<Trousers> extent = new ArrayList<>();
+
     private double waistLength;
     private double legLength;
 
@@ -17,6 +25,8 @@ public class Trousers extends ClothingItem {
 
         this.waistLength = waistLength;
         this.legLength = legLength;
+
+        addToExtent(this);
     }
 
     public double getWaistLength() {
@@ -33,5 +43,18 @@ public class Trousers extends ClothingItem {
 
     public void setLegLength(double legLength) {
         this.legLength = legLength;
+    }
+
+    private static void addToExtent(Trousers t) {
+        if (t == null) throw new IllegalArgumentException("Trousers cannot be null");
+        extent.add(t);
+    }
+
+    public static List<Trousers> getExtent() {
+        return new ArrayList<>(extent);
+    }
+
+    public static void setExtent(List<Trousers> loaded) {
+        extent = new ArrayList<>(loaded);
     }
 }

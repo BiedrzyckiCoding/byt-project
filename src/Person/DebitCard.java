@@ -1,10 +1,20 @@
 package Person;
 
-import Validation.ValidationUtil;
+import Utils.ValidationUtil;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DebitCard {
+public class DebitCard implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static List<DebitCard> extent = new ArrayList<>();
+
     private String cardNumber;
     private LocalDate expirationDate;
     private String securityCode;
@@ -17,6 +27,8 @@ public class DebitCard {
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
         this.securityCode = securityCode;
+
+        addToExtent(this);
     }
 
     public String getCardNumber() {
@@ -41,5 +53,18 @@ public class DebitCard {
 
     public void setSecurityCode(String securityCode) {
         this.securityCode = securityCode;
+    }
+
+    private static void addToExtent(DebitCard dc) {
+        if (dc == null) throw new IllegalArgumentException("DebitCard cannot be null");
+        extent.add(dc);
+    }
+
+    public static List<DebitCard> getExtent() {
+        return new ArrayList<>(extent);
+    }
+
+    public static void setExtent(List<DebitCard> loaded) {
+        extent = new ArrayList<>(loaded);
     }
 }

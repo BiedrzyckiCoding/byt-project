@@ -1,11 +1,11 @@
 package Enums;
 
 public enum OrderStatus {
-    Submitted,
-    Accepted,
-    Processing,
-    Cancelled,
-    Delivered,
-    ReadyForPickup,
-    Completed;
+    SUBMITTED,
+    ACCEPTED,
+    PROCESSING,
+    CANCELLED,
+    DELIVERED,
+    READY_FOR_PICKUP,
+    COMPLETED;
 }
