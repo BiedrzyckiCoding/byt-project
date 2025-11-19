@@ -85,20 +85,24 @@ public class HoodieTest {
         assertFalse(Hoodie.getExtent().contains(h2));
     }
 
-    @Test
     //addToExtent should throw when null is added
-    void testNullHoodieInExtent() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            //Hoodie.addToExtent(null);
-            //impossible to call private addToExtent directly, but constructor uses it.
+    @Test
+    void testNullHoodieInExtent() throws Exception {
+        Hoodie.setExtent(new ArrayList<>());
 
-            Hoodie.setExtent(new ArrayList<>());
-            //simulate the behavior manually using reflection
+        var method = Hoodie.class.getDeclaredMethod("addToExtent", Hoodie.class);
+        method.setAccessible(true);
 
-            var method = Hoodie.class.getDeclaredMethod("addToExtent", Hoodie.class);
-            method.setAccessible(true);
-            method.invoke(null, (Hoodie) null);
-        });
+        java.lang.reflect.InvocationTargetException ex = Assertions.assertThrows(
+                java.lang.reflect.InvocationTargetException.class,
+                () -> method.invoke(null, new Object[]{null})
+                //InvocationTargetException thrown by method.invoke() is caught by the test,
+                // InvocationTargetException is used to unwrap
+        );
+
+        //unwrap the actual exception thrown inside addToExtent
+        Assertions.assertTrue(ex.getTargetException() instanceof IllegalArgumentException);
+        Assertions.assertEquals("Hoodie cannot be null", ex.getTargetException().getMessage());
     }
 
     @Test
