@@ -12,6 +12,7 @@ import main.Person.Customer;
 import main.Person.DebitCard;
 import org.junit.jupiter.api.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -226,8 +227,10 @@ class OrderTest {
         var method = Order.class.getDeclaredMethod("addToExtent", Order.class);
         method.setAccessible(true);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> method.invoke(null, new Object[]{null}));
+        InvocationTargetException ex = assertThrows(InvocationTargetException.class,
+                () -> method.invoke(null, (Object) null));
+
+        assertTrue(ex.getCause() instanceof IllegalArgumentException);
         assertTrue(ex.getCause().getMessage().contains("Order cannot be null"));
     }
 
