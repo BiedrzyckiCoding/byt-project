@@ -2,7 +2,7 @@ package test.Clothing;
 
 import main.Clothing.ClothingItem;
 import main.Enums.ClothingSize;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
@@ -11,7 +11,6 @@ class TestClothingItem extends ClothingItem {
     public TestClothingItem(String name, String brand, double price, int stockQuantity,
                             List<String> material, List<String> color, ClothingSize clothingSize) {
         super(name, brand, price, stockQuantity, material, color, clothingSize);
-
     }
 }
 
@@ -21,7 +20,7 @@ public class ClothingItemTest {
     private final List<String> colors = List.of("Blue");
 
     @Test
-    public void testValidCreation() {
+    void testValidCreation() {
         ClothingItem item = new TestClothingItem(
                 "T-Shirt", "Nike", 50.0, 10,
                 materials, colors, ClothingSize.M
@@ -37,7 +36,7 @@ public class ClothingItemTest {
     }
 
     @Test
-    public void testNullClothingSize() {
+    void testNullClothingSize() {
         IllegalArgumentException ex = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> new TestClothingItem(
@@ -50,7 +49,7 @@ public class ClothingItemTest {
     }
 
     @Test
-    public void testPriceTooLow() {
+    void testPriceTooLow() {
         IllegalArgumentException ex = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> new TestClothingItem(
@@ -63,7 +62,7 @@ public class ClothingItemTest {
     }
 
     @Test
-    public void testClothingSizeSetter() {
+    void testClothingSizeSetter() {
         ClothingItem item = new TestClothingItem(
                 "T-Shirt", "Nike", 60.0, 10,
                 materials, colors, ClothingSize.M
@@ -73,5 +72,4 @@ public class ClothingItemTest {
 
         Assertions.assertEquals(ClothingSize.L, item.getClothingSize());
     }
-
 }
