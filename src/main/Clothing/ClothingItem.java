@@ -1,7 +1,6 @@
 package main.Clothing;
 import main.Enums.ClothingSize;
 import main.Utils.ValidationUtil;
-
 import java.util.List;
 
 
