@@ -19,7 +19,7 @@ public class Order implements Serializable {
     private static List<Order> extent = new ArrayList<>();
 
     private OrderStatus status;
-    private double discountApplied;
+    private boolean discountApplied;
     private double sumPrice;
     private LocalDate timestamp;
     private long paymentTimer;
@@ -29,9 +29,8 @@ public class Order implements Serializable {
     private List<ItemQuantityInOrder> items;
 
     public Order(List<ItemQuantityInOrder> items, Customer customer, double finalPrice, DeliveryType deliveryType, long paymentTimer,
-                 LocalDate timestamp, double sumPrice, double discountApplied, OrderStatus status) {
+                 LocalDate timestamp, double sumPrice, OrderStatus status) {
         ValidationUtil.notNull(status, "status");
-        ValidationUtil.nonNegative(discountApplied, "discountApplied");
         ValidationUtil.nonNegative(sumPrice, "sumPrice");
         ValidationUtil.notFuture(timestamp, "timestamp");
         ValidationUtil.nonNegative(paymentTimer, "paymentTimer");
@@ -42,12 +41,15 @@ public class Order implements Serializable {
 
         this.items = items;
         this.customer = customer;
-        this.finalPrice = sumPrice - (1 - discountApplied/100);
+        this.sumPrice = sumPrice;
+        if(customer.getMembershipCard().getDateEnd() != null) {
+            this.discountApplied = customer.getMembershipCard().getDateEnd().isAfter(LocalDate.now());
+        }
+        else this.discountApplied = false;
+        this.finalPrice = (discountApplied ? sumPrice * (100 - customer.getMembershipTier().getDiscount())/100 : sumPrice);
         this.deliveryType = deliveryType;
         this.paymentTimer = paymentTimer;
         this.timestamp = timestamp;
-        this.sumPrice = sumPrice;
-        this.discountApplied = discountApplied;
         this.status = status;
 
         addToExtent(this);
@@ -59,14 +61,6 @@ public class Order implements Serializable {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
-    }
-
-    public double getDiscountApplied() {
-        return discountApplied;
-    }
-
-    public void setDiscountApplied(double discountApplied) {
-        this.discountApplied = discountApplied;
     }
 
     public double getSumPrice() {

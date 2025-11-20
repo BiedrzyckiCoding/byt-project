@@ -15,8 +15,8 @@ public class HeeledShoe extends Footwear {
 
     private double heelHeight;
 
-    public HeeledShoe(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, double heelHeight) {
-        super(name, brand, price, stockQuantity, material, color);
+    public HeeledShoe(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, double heelHeight, double footSize) {
+        super(name, brand, price, stockQuantity, material, color, footSize);
 
         ValidationUtil.nonNegative(heelHeight, "heelHeight");
 

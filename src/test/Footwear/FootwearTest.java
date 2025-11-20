@@ -9,8 +9,8 @@ import java.util.List;
 
 //simple concrete subclass for testing
 class TestFootwear extends Footwear {
-    public TestFootwear(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color) {
-        super(name, brand, price, stockQuantity, material, color);
+    public TestFootwear(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, double footSize) {
+        super(name, brand, price, stockQuantity, material, color, footSize);
     }
 }
 
@@ -23,7 +23,7 @@ public class FootwearTest {
     void testValidCreation() {
         Footwear shoe = new TestFootwear(
                 "Sneakers", "Nike", 120.0, 10,
-                materials, colors
+                materials, colors, 40
         );
 
         Assertions.assertEquals("Sneakers", shoe.getName());
@@ -40,7 +40,7 @@ public class FootwearTest {
                 IllegalArgumentException.class,
                 () -> new TestFootwear(
                         "CheapShoes", "BrandX", 50.0, 5,
-                        materials, colors
+                        materials, colors,39
                 )
         );
 
@@ -51,7 +51,7 @@ public class FootwearTest {
     void testItemSettersAndGetters() {
         Footwear shoe = new TestFootwear(
                 "Sneakers", "Nike", 120.0, 10,
-                materials, colors
+                materials, colors,45
         );
 
         shoe.setName("Running Shoes");

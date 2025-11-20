@@ -26,7 +26,7 @@ public class HeeledShoeTest {
     void testValidCreation() {
         HeeledShoe shoe = new HeeledShoe(
                 "Evening Shoe", "BrandY", 120.0, 5,
-                materials, colors, 7.5
+                materials, colors, 7.5, 39
         );
 
         assertEquals("Evening Shoe", shoe.getName());
@@ -42,7 +42,7 @@ public class HeeledShoeTest {
     void testPriceTooLowThrows() {
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
-                () -> new HeeledShoe("Cheap Shoe", "BrandX", 50.0, 5, materials, colors, 5.0)
+                () -> new HeeledShoe("Cheap Shoe", "BrandX", 50.0, 5, materials, colors, 5.0, 38)
         );
 
         assertTrue(ex.getMessage().contains("Price for footwear"));
@@ -50,7 +50,7 @@ public class HeeledShoeTest {
 
     @Test
     void testHeelHeightSetterGetter() {
-        HeeledShoe shoe = new HeeledShoe("Evening Shoe", "BrandY", 120.0, 5, materials, colors, 7.5);
+        HeeledShoe shoe = new HeeledShoe("Evening Shoe", "BrandY", 120.0, 5, materials, colors, 7.5, 40);
 
         shoe.setHeelHeight(8.0);
         assertEquals(8.0, shoe.getHeelHeight());
@@ -58,8 +58,8 @@ public class HeeledShoeTest {
 
     @Test
     void testExtentManagement() {
-        HeeledShoe shoe1 = new HeeledShoe("Shoe1", "BrandA", 100.0, 3, materials, colors, 5.0);
-        HeeledShoe shoe2 = new HeeledShoe("Shoe2", "BrandB", 130.0, 2, materials, colors, 6.5);
+        HeeledShoe shoe1 = new HeeledShoe("Shoe1", "BrandA", 100.0, 3, materials, colors, 5.0, 42);
+        HeeledShoe shoe2 = new HeeledShoe("Shoe2", "BrandB", 130.0, 2, materials, colors, 6.5, 35);
 
         List<HeeledShoe> extent = HeeledShoe.getExtent();
         assertEquals(2, extent.size());

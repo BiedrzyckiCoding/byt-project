@@ -72,18 +72,16 @@ class OrderTest {
                 3600,
                 timestamp,
                 200,
-                10,
                 OrderStatus.SUBMITTED
         );
 
         assertEquals(items, order.getItems());
         assertEquals(customer, order.getCustomer());
         assertEquals(OrderStatus.SUBMITTED, order.getStatus());
-        assertEquals(10, order.getDiscountApplied());
         assertEquals(200, order.getSumPrice());
         assertEquals(timestamp, order.getTimestamp());
         assertEquals(3600, order.getPaymentTimer());
-        assertEquals(200 - (1 - 10.0/100), order.getFinalPrice());
+        assertEquals(190, order.getFinalPrice());
         assertEquals(1, Order.getExtent().size());
     }
 
@@ -93,7 +91,7 @@ class OrderTest {
         LocalDate timestamp = LocalDate.now();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(null, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100, 0, OrderStatus.ACCEPTED)
+                new Order(null, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100,  OrderStatus.ACCEPTED)
         );
         assertTrue(ex.getMessage().contains("items"));
     }
@@ -104,7 +102,7 @@ class OrderTest {
         LocalDate timestamp = LocalDate.now();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(items, null, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100, 0, OrderStatus.ACCEPTED)
+                new Order(items, null, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100,  OrderStatus.ACCEPTED)
         );
         assertTrue(ex.getMessage().contains("customer"));
     }
@@ -116,21 +114,9 @@ class OrderTest {
         LocalDate timestamp = LocalDate.now();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(items, customer, -5, DeliveryType.HOME_DELIVERY, 0, timestamp, 100, 0, OrderStatus.ACCEPTED)
+                new Order(items, customer, -5, DeliveryType.HOME_DELIVERY, 0, timestamp, 100,  OrderStatus.ACCEPTED)
         );
         assertTrue(ex.getMessage().contains("finalPrice"));
-    }
-
-    @Test
-    void testNegativeDiscountThrowsException() {
-        List<ItemQuantityInOrder> items = List.of(createItemQuantity());
-        Customer customer = createDummyCustomer();
-        LocalDate timestamp = LocalDate.now();
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100, -1, OrderStatus.ACCEPTED)
-        );
-        assertTrue(ex.getMessage().contains("discountApplied"));
     }
 
     @Test
@@ -140,7 +126,7 @@ class OrderTest {
         LocalDate timestamp = LocalDate.now();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, -100, 0, OrderStatus.ACCEPTED)
+                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, -100,  OrderStatus.ACCEPTED)
         );
         assertTrue(ex.getMessage().contains("sumPrice"));
     }
@@ -152,7 +138,7 @@ class OrderTest {
         LocalDate timestamp = LocalDate.now();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100, 0, null)
+                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100,  null)
         );
         assertTrue(ex.getMessage().contains("status"));
     }
@@ -164,7 +150,7 @@ class OrderTest {
         LocalDate timestamp = LocalDate.now();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(items, customer, 100, null, 0, timestamp, 100, 0, OrderStatus.ACCEPTED)
+                new Order(items, customer, 100, null, 0, timestamp, 100,  OrderStatus.ACCEPTED)
         );
         assertTrue(ex.getMessage().contains("deliveryType"));
     }
@@ -176,7 +162,7 @@ class OrderTest {
         LocalDate timestamp = LocalDate.now();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, -1, timestamp, 100, 0, OrderStatus.ACCEPTED)
+                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, -1, timestamp, 100,  OrderStatus.ACCEPTED)
         );
         assertTrue(ex.getMessage().contains("paymentTimer"));
     }
@@ -188,7 +174,7 @@ class OrderTest {
         LocalDate timestamp = LocalDate.now().plusDays(1);
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100, 0, OrderStatus.ACCEPTED)
+                new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 0, timestamp, 100,  OrderStatus.ACCEPTED)
         );
         assertTrue(ex.getMessage().contains("timestamp"));
     }
@@ -199,10 +185,9 @@ class OrderTest {
         Customer customer = createDummyCustomer();
         LocalDate timestamp = LocalDate.now();
 
-        Order order = new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 3600, timestamp, 100, 5, OrderStatus.ACCEPTED);
+        Order order = new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 3600, timestamp, 100,  OrderStatus.ACCEPTED);
 
         order.setStatus(OrderStatus.COMPLETED);
-        order.setDiscountApplied(10);
         order.setSumPrice(200);
         order.setFinalPrice(180);
         order.setPaymentTimer(7200);
@@ -212,7 +197,6 @@ class OrderTest {
         order.setTimestamp(LocalDate.now());
 
         assertEquals(OrderStatus.COMPLETED, order.getStatus());
-        assertEquals(10, order.getDiscountApplied());
         assertEquals(200, order.getSumPrice());
         assertEquals(180, order.getFinalPrice());
         assertEquals(7200, order.getPaymentTimer());
@@ -240,8 +224,8 @@ class OrderTest {
         Customer customer = createDummyCustomer();
         LocalDate timestamp = LocalDate.now();
 
-        Order order1 = new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 3600, timestamp, 100, 5, OrderStatus.ACCEPTED);
-        Order order2 = new Order(items, customer, 200, DeliveryType.STORE_PICKUP, 7200, timestamp, 200, 10, OrderStatus.COMPLETED);
+        Order order1 = new Order(items, customer, 100, DeliveryType.HOME_DELIVERY, 3600, timestamp, 100,  OrderStatus.ACCEPTED);
+        Order order2 = new Order(items, customer, 200, DeliveryType.STORE_PICKUP, 7200, timestamp, 200,  OrderStatus.COMPLETED);
 
         assertEquals(2, Order.getExtent().size());
 

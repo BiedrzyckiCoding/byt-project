@@ -20,7 +20,7 @@ public class BootTest {
 
     @Test
     void testValidCreation() {
-        Boot boot = new Boot("Hiking Boot", "Timberland", 150.0, 8, materials, colors, true);
+        Boot boot = new Boot("Hiking Boot", "Timberland", 150.0, 8, materials, colors, true, 44);
 
         Assertions.assertEquals("Hiking Boot", boot.getName());
         Assertions.assertEquals("Timberland", boot.getBrand());
@@ -35,14 +35,14 @@ public class BootTest {
     void testPriceTooLowThrows() {
         IllegalArgumentException ex = Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> new Boot("Cheap Boot", "BrandX", 50.0, 5, materials, colors, false)
+                () -> new Boot("Cheap Boot", "BrandX", 50.0, 5, materials, colors, false, 45)
         );
         Assertions.assertTrue(ex.getMessage().contains("Price for footwear"));
     }
 
     @Test
     void testWaterproofSetterGetter() {
-        Boot boot = new Boot("Hiking Boot", "Timberland", 150.0, 8, materials, colors, true);
+        Boot boot = new Boot("Hiking Boot", "Timberland", 150.0, 8, materials, colors, true, 39);
 
         boot.setWaterproof(false);
         Assertions.assertFalse(boot.isWaterproof());
@@ -50,8 +50,8 @@ public class BootTest {
 
     @Test
     void testExtentManagement() {
-        Boot boot1 = new Boot("Boot1", "BrandA", 120.0, 5, materials, colors, true);
-        Boot boot2 = new Boot("Boot2", "BrandB", 130.0, 3, materials, colors, false);
+        Boot boot1 = new Boot("Boot1", "BrandA", 120.0, 5, materials, colors, true, 39);
+        Boot boot2 = new Boot("Boot2", "BrandB", 130.0, 3, materials, colors, false, 44);
 
         List<Boot> extent = Boot.getExtent();
         Assertions.assertEquals(2, extent.size());

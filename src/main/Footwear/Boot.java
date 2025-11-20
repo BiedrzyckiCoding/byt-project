@@ -13,8 +13,8 @@ public class Boot extends Footwear {
 
     private boolean waterproof;
 
-    public Boot(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, boolean waterproof) {
-        super(name, brand, price, stockQuantity, material, color);
+    public Boot(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, boolean waterproof, double footSize) {
+        super(name, brand, price, stockQuantity, material, color, footSize);
         this.waterproof = waterproof;
 
         addToExtent(this);
