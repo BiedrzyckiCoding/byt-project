@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         PersistenceUtil.loadAll();
 
-//        createSampleData();
+        createSampleData();
 
         PersistenceUtil.saveAll();
 
@@ -89,32 +89,32 @@ public class Main {
 
         Boot b1 = new Boot(
                 "Mountain Boot", "TrailMaster", 89.99, 12,
-                List.of("Leather"), List.of("Brown"), true
+                List.of("Leather"), List.of("Brown"), true, 40
         );
 
         Boot b2 = new Boot(
                 "Work Boot", "HeavyDuty", 89, 18,
-                List.of("Synthetic"), List.of("Black"), false
+                List.of("Synthetic"), List.of("Black"), false, 41
         );
 
         Boot b3 = new Boot(
                 "Winter Boot", "SnowGuard", 99.99, 10,
-                List.of("Leather", "Fur"), List.of("Grey"), true
+                List.of("Leather", "Fur"), List.of("Grey"), true,39
         );
 
         HeeledShoe hs1 = new HeeledShoe(
                 "Elegant Heels", "LuxeFashion", 89, 20,
-                List.of("Leather"), List.of("Red"), 8.0
+                List.of("Leather"), List.of("Red"), 8.0, 39
         );
 
         HeeledShoe hs2 = new HeeledShoe(
                 "Party Heels", "GlamStyle", 89, 10,
-                List.of("Synthetic"), List.of("Gold"), 10.5
+                List.of("Synthetic"), List.of("Gold"), 10.5,40
         );
 
         HeeledShoe hs3 = new HeeledShoe(
                 "Office Heels", "WorkWear", 89, 25,
-                List.of("Leather"), List.of("Black"), 6.0
+                List.of("Leather"), List.of("Black"), 6.0,37
         );
 
         MembershipCard mc1 = new MembershipCard(
@@ -190,19 +190,19 @@ public class Main {
         Order o1 = new Order(
                 List.of(), cu1, 100.0,
                 DeliveryType.HOME_DELIVERY, 48,
-                LocalDate.now(), 100.0, 0.0, OrderStatus.PROCESSING
+                LocalDate.now(), 100.0, OrderStatus.PROCESSING
         );
 
         Order o2 = new Order(
                 List.of(), cu2, 250.0,
                 DeliveryType.STORE_PICKUP, 24,
-                LocalDate.now(), 250.0, 10.0, OrderStatus.COMPLETED
+                LocalDate.now(), 250.0, OrderStatus.COMPLETED
         );
 
         Order o3 = new Order(
                 List.of(), cu3, 75.0,
                 DeliveryType.HOME_DELIVERY, 72,
-                LocalDate.now(), 75.0, 5.0, OrderStatus.PROCESSING
+                LocalDate.now(), 75.0, OrderStatus.PROCESSING
         );
     }
 
