@@ -1,6 +1,7 @@
-package main.Clothing;
+package main.PersistenceModels;
 
 
+import main.Clothing.ClothingItem;
 import main.Enums.ClothingSize;
 
 import java.io.Serial;
@@ -40,7 +41,7 @@ public class Hoodie extends ClothingItem {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<Hoodie> loaded) {
+    static void setExtent(List<Hoodie> loaded) {
         extent = new ArrayList<>(loaded);
     }
 }

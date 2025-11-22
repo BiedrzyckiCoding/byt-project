@@ -1,4 +1,4 @@
-package main.Person;
+package main.PersistenceModels;
 
 import main.Utils.ValidationUtil;
 
@@ -64,7 +64,7 @@ public class DebitCard implements Serializable {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<DebitCard> loaded) {
+    static void setExtent(List<DebitCard> loaded) {
         extent = new ArrayList<>(loaded);
     }
 }

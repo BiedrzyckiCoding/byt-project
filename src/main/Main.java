@@ -1,12 +1,9 @@
 package main;
 
-import main.Clothing.*;
 import main.Enums.*;
-import main.Footwear.*;
 import main.MembershipTiers.*;
-import main.Order.*;
-import main.Person.*;
-import main.Utils.PersistenceUtil;
+import main.PersistenceModels.*;
+import main.PersistenceModels.PersistenceUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         PersistenceUtil.loadAll();
 
-        createSampleData();
+//        createSampleData();
 
         PersistenceUtil.saveAll();
 
@@ -26,6 +23,10 @@ public class Main {
         Hoodie anyHoodie = Hoodie.getExtent().isEmpty() ? null : Hoodie.getExtent().getFirst();
         if (anyHoodie != null) {
             System.out.println("Example hoodie after load: " + anyHoodie.getName() + " - " + anyHoodie.getBrand() + " - " + anyHoodie.getPrice() + " - " + anyHoodie.getMaterial());
+        }
+        Hoodie anyHoodie2 = Hoodie.getExtent().isEmpty() ? null : Hoodie.getExtent().getLast();
+        if (anyHoodie2 != null) {
+            System.out.println("Example hoodie after load: " + anyHoodie2.getName() + " - " + anyHoodie2.getBrand() + " - " + anyHoodie2.getPrice() + " - " + anyHoodie2.getMaterial());
         }
     }
 

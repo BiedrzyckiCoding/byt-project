@@ -1,5 +1,6 @@
-package main.Clothing;
+package main.PersistenceModels;
 
+import main.Clothing.ClothingItem;
 import main.Enums.ClothingSize;
 import main.Utils.ValidationUtil;
 
@@ -54,7 +55,7 @@ public class Trousers extends ClothingItem {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<Trousers> loaded) {
+    static void setExtent(List<Trousers> loaded) {
         extent = new ArrayList<>(loaded);
     }
 }

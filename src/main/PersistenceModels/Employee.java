@@ -1,5 +1,6 @@
-package main.Person;
+package main.PersistenceModels;
 
+import main.Person.Person;
 import main.Utils.ValidationUtil;
 
 import java.io.Serial;
@@ -77,7 +78,7 @@ public class Employee extends Person {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<Employee> loaded) {
+    static void setExtent(List<Employee> loaded) {
         extent = new ArrayList<>(loaded);
     }
 

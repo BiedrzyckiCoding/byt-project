@@ -1,7 +1,7 @@
-package main.Person;
+package main.PersistenceModels;
 
-import main.MembershipTiers.MembershipCard;
 import main.MembershipTiers.MembershipTier;
+import main.Person.Person;
 import main.Utils.ValidationUtil;
 
 import java.io.Serial;
@@ -102,7 +102,7 @@ public class Customer extends Person {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<Customer> loaded) {
+    static void setExtent(List<Customer> loaded) {
         extent = new ArrayList<>(loaded);
     }
 

@@ -1,4 +1,6 @@
-package main.Footwear;
+package main.PersistenceModels;
+
+import main.Footwear.Footwear;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class Boot extends Footwear {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<Boot> loaded) {
+    static void setExtent(List<Boot> loaded) {
         extent = new ArrayList<>(loaded);
     }
 }
