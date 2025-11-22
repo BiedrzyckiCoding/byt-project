@@ -1,5 +1,6 @@
-package main.Footwear;
+package main.PersistenceModels;
 
+import main.Footwear.Footwear;
 import main.Utils.ValidationUtil;
 
 import java.io.Serial;
@@ -42,7 +43,7 @@ public class HeeledShoe extends Footwear {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<HeeledShoe> loaded) {
+    static void setExtent(List<HeeledShoe> loaded) {
         extent = new ArrayList<>(loaded);
     }
 }

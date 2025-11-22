@@ -1,5 +1,6 @@
-package main.Clothing;
+package main.PersistenceModels;
 
+import main.Clothing.ClothingItem;
 import main.Enums.ClothingSize;
 import main.Enums.Fit;
 import main.Enums.SleeveLength;
@@ -56,7 +57,7 @@ public class Shirt extends ClothingItem {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<Shirt> loaded) {
+    static void setExtent(List<Shirt> loaded) {
         extent = new ArrayList<>(loaded);
     }
 }

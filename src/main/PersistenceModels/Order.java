@@ -1,8 +1,8 @@
-package main.Order;
+package main.PersistenceModels;
 
 import main.Enums.DeliveryType;
 import main.Enums.OrderStatus;
-import main.Person.Customer;
+import main.Order.ItemQuantityInOrder;
 import main.Utils.ValidationUtil;
 
 import java.io.Serial;
@@ -128,7 +128,7 @@ public class Order implements Serializable {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<Order> loaded) {
+    static void setExtent(List<Order> loaded) {
         extent = new ArrayList<>(loaded);
     }
 

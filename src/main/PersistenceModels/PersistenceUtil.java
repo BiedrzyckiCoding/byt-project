@@ -1,16 +1,4 @@
-package main.Utils;
-
-import main.Clothing.Hoodie;
-import main.Clothing.Shirt;
-import main.Clothing.Trousers;
-import main.Footwear.Boot;
-import main.Footwear.HeeledShoe;
-import main.MembershipTiers.MembershipCard;
-import main.Order.Order;
-import main.Person.Contract;
-import main.Person.Customer;
-import main.Person.DebitCard;
-import main.Person.Employee;
+package main.PersistenceModels;
 
 import java.io.*;
 import java.util.List;

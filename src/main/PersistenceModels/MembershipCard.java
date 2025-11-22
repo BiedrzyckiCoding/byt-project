@@ -1,4 +1,4 @@
-package main.MembershipTiers;
+package main.PersistenceModels;
 
 import main.Utils.ValidationUtil;
 
@@ -52,7 +52,7 @@ public class MembershipCard implements Serializable {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<MembershipCard> loaded) {
+    static void setExtent(List<MembershipCard> loaded) {
         extent = new ArrayList<>(loaded);
     }
 }

@@ -1,4 +1,4 @@
-package main.Person;
+package main.PersistenceModels;
 
 import main.Enums.ContractType;
 import main.Utils.ValidationUtil;
@@ -65,7 +65,7 @@ public class Contract implements Serializable {
         return new ArrayList<>(extent);
     }
 
-    public static void setExtent(List<Contract> loaded) {
+    static void setExtent(List<Contract> loaded) {
         extent = new ArrayList<>(loaded);
     }
 }
