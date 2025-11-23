@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 public class ItemQuantityInOrder implements Serializable {
     private Item item;
-    private double quantity;
+    private int quantity;
 
     public ItemQuantityInOrder(Item item, double quantity) {
         ValidationUtil.notNull(item, "item");
