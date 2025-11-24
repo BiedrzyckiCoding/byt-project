@@ -25,6 +25,7 @@ public class LimitedEdition extends Item {
     }
 
     public void setReleaseDate(LocalDate releaseDate) {
+        ValidationUtil.notFuture(releaseDate, "releaseDate");
         this.releaseDate = releaseDate;
     }
 
@@ -33,6 +34,7 @@ public class LimitedEdition extends Item {
     }
 
     public void setTotalProduced(int totalProduced) {
+        ValidationUtil.positive(totalProduced, "totalProduced");
         this.totalProduced = totalProduced;
     }
 }

@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         PersistenceUtil.loadAll();
 
-//        createSampleData();
+        //createSampleData();
 
         PersistenceUtil.saveAll();
 
@@ -189,21 +189,21 @@ public class Main {
         );
 
         Order o1 = new Order(
-                List.of(), cu1, 100.0,
-                DeliveryType.HOME_DELIVERY, 48,
-                LocalDate.now(), 100.0, OrderStatus.PROCESSING
+                List.of(), cu1,
+                DeliveryType.HOME_DELIVERY,
+                LocalDate.now(),  OrderStatus.PROCESSING
         );
 
         Order o2 = new Order(
-                List.of(), cu2, 250.0,
-                DeliveryType.STORE_PICKUP, 24,
-                LocalDate.now(), 250.0, OrderStatus.COMPLETED
+                List.of(), cu2,
+                DeliveryType.STORE_PICKUP,
+                LocalDate.now(),  OrderStatus.COMPLETED
         );
 
         Order o3 = new Order(
-                List.of(), cu3, 75.0,
-                DeliveryType.HOME_DELIVERY, 72,
-                LocalDate.now(), 75.0, OrderStatus.PROCESSING
+                List.of(), cu3,
+                DeliveryType.HOME_DELIVERY,
+                LocalDate.now(), OrderStatus.PROCESSING
         );
     }
 

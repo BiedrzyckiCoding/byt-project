@@ -14,12 +14,12 @@ public class Item implements Serializable {
     private List<String> color;
 
     public Item(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color) {
-        ValidationUtil.notEmpty(name, "name");
-        ValidationUtil.notEmpty(brand, "brand");
+        ValidationUtil.notEmptyString(name, "name");
+        ValidationUtil.notEmptyString(brand, "brand");
         ValidationUtil.nonNegative(price, "price");
         ValidationUtil.nonNegative(stockQuantity, "stockQuantity");
-        ValidationUtil.emptyList(material, "material");
-        ValidationUtil.emptyList(color, "color");
+        ValidationUtil.nonEmptyList(material, "material");
+        ValidationUtil.nonEmptyList(color, "color");
 
         this.name = name;
         this.brand = brand;
@@ -34,6 +34,7 @@ public class Item implements Serializable {
     }
 
     public void setName(String name) {
+        ValidationUtil.notEmptyString(name, "name");
         this.name = name;
     }
 
@@ -42,6 +43,7 @@ public class Item implements Serializable {
     }
 
     public void setBrand(String brand) {
+        ValidationUtil.notEmptyString(brand, "brand");
         this.brand = brand;
     }
 
@@ -50,6 +52,7 @@ public class Item implements Serializable {
     }
 
     public void setPrice(double price) {
+        ValidationUtil.nonNegative(price, "price");
         this.price = price;
     }
 
@@ -58,6 +61,7 @@ public class Item implements Serializable {
     }
 
     public void setStockQuantity(int stockQuantity) {
+        ValidationUtil.nonNegative(stockQuantity, "stockQuantity");
         this.stockQuantity = stockQuantity;
     }
 
@@ -66,6 +70,7 @@ public class Item implements Serializable {
     }
 
     public void setMaterial(List<String> material) {
+        ValidationUtil.nonEmptyList(material, "material");
         this.material = material;
     }
 
@@ -74,6 +79,7 @@ public class Item implements Serializable {
     }
 
     public void setColor(List<String> color) {
+        ValidationUtil.nonEmptyList(color, "color");
         this.color = color;
     }
 

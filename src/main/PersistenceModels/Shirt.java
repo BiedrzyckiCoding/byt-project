@@ -37,6 +37,7 @@ public class Shirt extends ClothingItem {
     }
 
     public void setSleeveLength(SleeveLength sleeveLength) {
+        ValidationUtil.notNull(sleeveLength, "sleeveLength");
         this.sleeveLength = sleeveLength;
     }
 
@@ -45,6 +46,7 @@ public class Shirt extends ClothingItem {
     }
 
     public void setFit(Fit fit) {
+        ValidationUtil.notNull(fit, "fit");
         this.fit = fit;
     }
 

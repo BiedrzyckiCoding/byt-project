@@ -11,9 +11,10 @@ public abstract class Footwear extends Item {
     public Footwear(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, double footSize) {
         super(name, brand, price, stockQuantity, material, color);
 
-        if(price < MIN_PRICE) {
-            throw new IllegalArgumentException("Price for footwear ust be greater than " + MIN_PRICE);
+        if (price < MIN_PRICE) {
+            throw new IllegalArgumentException("Price for footwear must be greater than " + MIN_PRICE);
         }
+        sizeValidation(footSize);
         this.footSize = footSize;
     }
 
@@ -22,6 +23,14 @@ public abstract class Footwear extends Item {
     }
 
     public void setFootSize(double footSize) {
+        sizeValidation(footSize);
         this.footSize = footSize;
     }
+
+    private void sizeValidation(double footSize) {
+        if (footSize < 35 || footSize > 49) {
+            throw new IllegalArgumentException("Size for footwear must be between " + 35 + " and " + 49);
+        }
+    }
+
 }

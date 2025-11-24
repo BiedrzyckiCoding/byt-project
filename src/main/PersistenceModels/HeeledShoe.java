@@ -31,6 +31,7 @@ public class HeeledShoe extends Footwear {
     }
 
     public void setHeelHeight(double heelHeight) {
+        ValidationUtil.nonNegative(heelHeight, "heelHeight");
         this.heelHeight = heelHeight;
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ValidationUtil {
 
-    public static void notEmpty(String value, String field) {
+    public static void notEmptyString(String value, String field) {
         if (value == null || value.trim().isEmpty()) {
             throw new IllegalArgumentException(field + " cannot be empty.");
         }
@@ -35,7 +35,7 @@ public class ValidationUtil {
         }
     }
 
-    public static void emptyList(List<String> list, String field) {
+    public static void nonEmptyList(List<String> list, String field) {
         if (list == null || list.isEmpty()) {
             throw new IllegalArgumentException(field + " cannot be empty.");
         }

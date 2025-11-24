@@ -20,35 +20,25 @@ public class Order implements Serializable {
 
     private OrderStatus status;
     private boolean discountApplied;
-    private double sumPrice;
     private LocalDate timestamp;
-    private long paymentTimer;
     private DeliveryType deliveryType;
-    private double finalPrice;
     private Customer customer;
     private List<ItemQuantityInOrder> items;
 
-    public Order(List<ItemQuantityInOrder> items, Customer customer, double finalPrice, DeliveryType deliveryType, long paymentTimer,
-                 LocalDate timestamp, double sumPrice, OrderStatus status) {
+    public Order(List<ItemQuantityInOrder> items, Customer customer, DeliveryType deliveryType,
+                 LocalDate timestamp, OrderStatus status) {
         ValidationUtil.notNull(status, "status");
-        ValidationUtil.nonNegative(sumPrice, "sumPrice");
         ValidationUtil.notFuture(timestamp, "timestamp");
-        ValidationUtil.nonNegative(paymentTimer, "paymentTimer");
         ValidationUtil.notNull(deliveryType, "deliveryType");
-        ValidationUtil.nonNegative(finalPrice, "finalPrice");
         ValidationUtil.notNull(customer, "customer");
         ValidationUtil.notNull(items, "items");
 
         this.items = items;
         this.customer = customer;
-        this.sumPrice = sumPrice;
-        if(customer.getMembershipCard().getDateEnd() != null) {
+        if (customer.getMembershipCard().getDateEnd() != null) {
             this.discountApplied = customer.getMembershipCard().getDateEnd().isAfter(LocalDate.now());
-        }
-        else this.discountApplied = false;
-        this.finalPrice = (discountApplied ? sumPrice * (100 - customer.getMembershipTier().getDiscount())/100 : sumPrice);
+        } else this.discountApplied = false;
         this.deliveryType = deliveryType;
-        this.paymentTimer = paymentTimer;
         this.timestamp = timestamp;
         this.status = status;
 
@@ -60,15 +50,16 @@ public class Order implements Serializable {
     }
 
     public void setStatus(OrderStatus status) {
+        ValidationUtil.notNull(status, "status");
         this.status = status;
     }
 
     public double getSumPrice() {
-        return sumPrice;
-    }
-
-    public void setSumPrice(double sumPrice) {
-        this.sumPrice = sumPrice;
+        double sum = 0;
+        for (ItemQuantityInOrder item : items) {
+            sum += item.getQuantity()*item.getItem().getPrice();
+        }
+        return sum;
     }
 
     public LocalDate getTimestamp() {
@@ -76,15 +67,8 @@ public class Order implements Serializable {
     }
 
     public void setTimestamp(LocalDate timestamp) {
+        ValidationUtil.notFuture(timestamp, "timestamp");
         this.timestamp = timestamp;
-    }
-
-    public long getPaymentTimer() {
-        return paymentTimer;
-    }
-
-    public void setPaymentTimer(long paymentTimer) {
-        this.paymentTimer = paymentTimer;
     }
 
     public DeliveryType getDeliveryType() {
@@ -92,15 +76,15 @@ public class Order implements Serializable {
     }
 
     public void setDeliveryType(DeliveryType deliveryType) {
+        ValidationUtil.notNull(deliveryType, "deliveryType");
         this.deliveryType = deliveryType;
     }
 
     public double getFinalPrice() {
+        double sumPrice = this.getSumPrice();
+        double finalPrice = discountApplied ? sumPrice * (100 - customer.getMembershipTier().getDiscount()) / 100 : sumPrice;
+        if (this.deliveryType == DeliveryType.HOME_DELIVERY) finalPrice += 5;
         return finalPrice;
-    }
-
-    public void setFinalPrice(double finalPrice) {
-        this.finalPrice = finalPrice;
     }
 
     public Customer getCustomer() {
@@ -108,6 +92,7 @@ public class Order implements Serializable {
     }
 
     public void setCustomer(Customer customer) {
+        ValidationUtil.notNull(customer, "customer");
         this.customer = customer;
     }
 
@@ -116,6 +101,7 @@ public class Order implements Serializable {
     }
 
     public void setItems(List<ItemQuantityInOrder> items) {
+        ValidationUtil.notNull(items, "items");
         this.items = items;
     }
 
@@ -133,23 +119,30 @@ public class Order implements Serializable {
     }
 
     public void viewOrder() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void finalizeOrder() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void makePayment() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void changeOrderStatus() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void checkPendingOrders() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void checkOrderMadeByCustomer() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void checkOrderDeliveryType() {
-        /* TODO */ }
+        /* TODO */
+    }
 }

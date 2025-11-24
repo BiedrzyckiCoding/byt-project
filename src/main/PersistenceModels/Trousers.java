@@ -35,6 +35,7 @@ public class Trousers extends ClothingItem {
     }
 
     public void setWaistLength(double waistLength) {
+        ValidationUtil.positive(waistLength, "waistLength");
         this.waistLength = waistLength;
     }
 
@@ -43,6 +44,7 @@ public class Trousers extends ClothingItem {
     }
 
     public void setLegLength(double legLength) {
+        ValidationUtil.positive(legLength, "legLength");
         this.legLength = legLength;
     }
 
