@@ -20,9 +20,9 @@ public class DebitCard implements Serializable {
     private String securityCode;
 
     public DebitCard(String cardNumber, LocalDate expirationDate, String securityCode) {
-        ValidationUtil.notNull(cardNumber, "cardNumber");
+        ValidationUtil.notEmptyString(cardNumber, "cardNumber");
         ValidationUtil.notNull(expirationDate, "expirationDate");
-        ValidationUtil.notNull(securityCode, "securityCode");
+        ValidationUtil.notEmptyString(securityCode, "securityCode");
 
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
@@ -36,6 +36,7 @@ public class DebitCard implements Serializable {
     }
 
     public void setCardNumber(String cardNumber) {
+        ValidationUtil.notEmptyString(cardNumber, "cardNumber");
         this.cardNumber = cardNumber;
     }
 
@@ -44,6 +45,7 @@ public class DebitCard implements Serializable {
     }
 
     public void setExpirationDate(LocalDate expirationDate) {
+        ValidationUtil.notNull(expirationDate, "expirationDate");
         this.expirationDate = expirationDate;
     }
 
@@ -52,6 +54,7 @@ public class DebitCard implements Serializable {
     }
 
     public void setSecurityCode(String securityCode) {
+        ValidationUtil.notNull(expirationDate, "expirationDate");
         this.securityCode = securityCode;
     }
 

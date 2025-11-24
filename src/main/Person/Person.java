@@ -12,13 +12,12 @@ public abstract class Person implements Serializable {
     private String surname;
     private String email;
     private LocalDate birthDate;
-    private int age;
 
     public Person(String name, List<String> address, String surname, String email, LocalDate birthDate) {
-        ValidationUtil.notNull(name, "name");
-        ValidationUtil.emptyList(address, "address");
-        ValidationUtil.notNull(surname, "surname");
-        ValidationUtil.notNull(email, "email");
+        ValidationUtil.notEmptyString(name, "name");
+        ValidationUtil.nonEmptyList(address, "address");
+        ValidationUtil.notEmptyString(surname, "surname");
+        ValidationUtil.notEmptyString(email, "email");
         ValidationUtil.notFuture(birthDate, "birthDate");
 
         this.name = name;
@@ -26,7 +25,6 @@ public abstract class Person implements Serializable {
         this.surname = surname;
         this.email = email;
         this.birthDate = birthDate;
-        this.age = LocalDate.now().getYear() - birthDate.getYear();
     }
 
     public String getName() {
@@ -34,6 +32,7 @@ public abstract class Person implements Serializable {
     }
 
     public void setName(String name) {
+        ValidationUtil.notEmptyString(name, "name");
         this.name = name;
     }
 
@@ -42,6 +41,7 @@ public abstract class Person implements Serializable {
     }
 
     public void setAddress(List<String> address) {
+        ValidationUtil.nonEmptyList(address, "address");
         this.address = address;
     }
 
@@ -50,6 +50,7 @@ public abstract class Person implements Serializable {
     }
 
     public void setSurname(String surname) {
+        ValidationUtil.notEmptyString(surname, "surname");
         this.surname = surname;
     }
 
@@ -58,6 +59,7 @@ public abstract class Person implements Serializable {
     }
 
     public void setEmail(String email) {
+        ValidationUtil.notEmptyString(email, "email");
         this.email = email;
     }
 
@@ -66,6 +68,7 @@ public abstract class Person implements Serializable {
     }
 
     public void setBirthDate(LocalDate birthDate) {
+        ValidationUtil.notFuture(birthDate, "birthDate");
         this.birthDate = birthDate;
     }
 

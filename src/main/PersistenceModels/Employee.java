@@ -18,7 +18,27 @@ public class Employee extends Person {
     private double salary;
     private int itemsSold;
     private Contract contract;
+    private Employee manager;
     private List<Employee> subordinates;
+
+
+    public Employee(String name, List<String> address, String surname, String email,
+                    LocalDate birthDate, double salary, int itemsSold, Contract contract, Employee manager, List<Employee> subordinates) {
+        super(name, address, surname, email, birthDate);
+
+        ValidationUtil.nonNegative(salary, "salary");
+        ValidationUtil.nonNegative(itemsSold, "itemsSold");
+        ValidationUtil.notNull(contract, "contract");
+        ValidationUtil.notNull(subordinates, "subordinates");
+
+        this.salary = salary;
+        this.itemsSold = itemsSold;
+        this.contract = contract;
+        this.manager = manager;
+        this.subordinates = subordinates;
+
+        addToExtent(this);
+    }
 
     public Employee(String name, List<String> address, String surname, String email,
                     LocalDate birthDate, double salary, int itemsSold, Contract contract, List<Employee> subordinates) {
@@ -32,6 +52,7 @@ public class Employee extends Person {
         this.salary = salary;
         this.itemsSold = itemsSold;
         this.contract = contract;
+        this.manager = null;
         this.subordinates = subordinates;
 
         addToExtent(this);
@@ -42,6 +63,7 @@ public class Employee extends Person {
     }
 
     public void setSalary(double salary) {
+        ValidationUtil.nonNegative(salary, "salary");
         this.salary = salary;
     }
 
@@ -50,6 +72,7 @@ public class Employee extends Person {
     }
 
     public void setItemsSold(int itemsSold) {
+        ValidationUtil.nonNegative(itemsSold, "itemsSold");
         this.itemsSold = itemsSold;
     }
 
@@ -58,7 +81,16 @@ public class Employee extends Person {
     }
 
     public void setContract(Contract contract) {
+        ValidationUtil.notNull(contract, "contract");
         this.contract = contract;
+    }
+
+    public Employee getManager() {
+        return manager;
+    }
+
+    public void setManager(Employee manager) {
+        this.manager = manager;
     }
 
     public List<Employee> getSubordinates() {
@@ -66,6 +98,7 @@ public class Employee extends Person {
     }
 
     public void setSubordinates(List<Employee> subordinates) {
+        ValidationUtil.notNull(subordinates, "subordinates");
         this.subordinates = subordinates;
     }
 
@@ -83,17 +116,22 @@ public class Employee extends Person {
     }
 
     public void addNewEmployee() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void deleteEmployee() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void checkEmployeeList() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void viewDashboard() {
-        /* TODO */ }
+        /* TODO */
+    }
 
     public void checkFinancialReport() {
-        /* TODO */ }
+        /* TODO */
+    }
 }

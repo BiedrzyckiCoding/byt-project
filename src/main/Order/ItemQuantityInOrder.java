@@ -7,9 +7,9 @@ import java.io.Serializable;
 
 public class ItemQuantityInOrder implements Serializable {
     private Item item;
-    private double quantity;
+    private int quantity;
 
-    public ItemQuantityInOrder(Item item, double quantity) {
+    public ItemQuantityInOrder(Item item, int quantity) {
         ValidationUtil.notNull(item, "item");
         ValidationUtil.nonNegative(quantity, "quantity");
 
@@ -22,6 +22,7 @@ public class ItemQuantityInOrder implements Serializable {
     }
 
     public void setItem(Item item) {
+        ValidationUtil.notNull(item, "item");
         this.item = item;
     }
 
@@ -29,7 +30,8 @@ public class ItemQuantityInOrder implements Serializable {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(int quantity) {
+        ValidationUtil.nonNegative(quantity, "quantity");
         this.quantity = quantity;
     }
 }

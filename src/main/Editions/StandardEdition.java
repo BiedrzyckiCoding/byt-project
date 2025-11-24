@@ -14,7 +14,7 @@ public class StandardEdition extends Item {
         super(name, brand, price, stockQuantity, material, color);
 
         ValidationUtil.notFuture(productionStartDate, "productionStartDate");
-        ValidationUtil.notNull(season, "season");
+        ValidationUtil.notEmptyString(season, "season");
 
         this.productionStartDate = productionStartDate;
         this.season = season;
@@ -25,6 +25,7 @@ public class StandardEdition extends Item {
     }
 
     public void setProductionStartDate(LocalDate productionStartDate) {
+        ValidationUtil.notFuture(productionStartDate, "productionStartDate");
         this.productionStartDate = productionStartDate;
     }
 
@@ -33,6 +34,7 @@ public class StandardEdition extends Item {
     }
 
     public void setSeason(String season) {
+        ValidationUtil.notEmptyString(season, "season");
         this.season = season;
     }
 }

@@ -32,28 +32,41 @@ public class Contract implements Serializable {
         addToExtent(this);
     }
 
+    public Contract(ContractType type, LocalDate employmentDate) {
+        ValidationUtil.notNull(type, "type");
+        ValidationUtil.notFuture(employmentDate, "employmentDate");
+        ValidationUtil.dateOrder(employmentDate, employmentDueDate);
+
+        this.type = type;
+        this.employmentDate = employmentDate;
+        this.employmentDueDate = null;
+
+        addToExtent(this);
+    }
+
     public ContractType getType() {
         return type;
     }
 
     public void setType(ContractType type) {
+        ValidationUtil.notNull(type, "type");
         this.type = type;
+    }
+
+    public void setEmploymentDates(LocalDate employmentDate, LocalDate employmentDueDate) {
+        ValidationUtil.notNull(employmentDate, "employmentDate");
+        ValidationUtil.notFuture(employmentDate, "employmentDate");
+        ValidationUtil.dateOrder(employmentDate, employmentDueDate);
+        this.employmentDate = employmentDate;
+        this.employmentDueDate = employmentDueDate;
     }
 
     public LocalDate getEmploymentDate() {
         return employmentDate;
     }
 
-    public void setEmploymentDate(LocalDate employmentDate) {
-        this.employmentDate = employmentDate;
-    }
-
     public LocalDate getEmploymentDueDate() {
         return employmentDueDate;
-    }
-
-    public void setEmploymentDueDate(LocalDate employmentDueDate) {
-        this.employmentDueDate = employmentDueDate;
     }
 
     private static void addToExtent(Contract c) {

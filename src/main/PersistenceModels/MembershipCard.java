@@ -20,6 +20,8 @@ public class MembershipCard implements Serializable {
     private LocalDate dateEnd;
 
     public MembershipCard(LocalDate dateStart, LocalDate dateEnd) {
+        ValidationUtil.notNull(dateStart, "dateStart");
+        ValidationUtil.notNull(dateEnd, "dateEnd");
         ValidationUtil.notFuture(dateStart, "dateStart");
         ValidationUtil.dateOrder(dateStart, dateEnd);
 
@@ -29,19 +31,29 @@ public class MembershipCard implements Serializable {
         addToExtent(this);
     }
 
-    public LocalDate getDateStart() { return dateStart; }
+    public MembershipCard(LocalDate dateStart) {
+        ValidationUtil.notNull(dateStart, "dateStart");
+        ValidationUtil.notFuture(dateStart, "dateStart");
 
-    public void setDateStart(LocalDate dateStart) {
         this.dateStart = dateStart;
+        this.dateEnd = null;
+
+        addToExtent(this);
+    }
+
+    public void setDates(LocalDate dateStart, LocalDate dateEnd) {
+        ValidationUtil.notNull(dateStart, "dateStart");
+        ValidationUtil.notFuture(dateStart, "dateStart");
+        ValidationUtil.dateOrder(dateStart, dateEnd);
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
     }
 
     public LocalDate getDateEnd() {
         return dateEnd;
     }
 
-    public void setDateEnd(LocalDate dateEnd) {
-        this.dateEnd = dateEnd;
-    }
+    public LocalDate getDateStart() { return dateStart; }
 
     private static void addToExtent(MembershipCard mc) {
         if (mc == null) throw new IllegalArgumentException("MembershipCard cannot be null");

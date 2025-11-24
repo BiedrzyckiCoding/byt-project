@@ -28,7 +28,7 @@ public class Customer extends Person {
                     MembershipCard membershipCard, MembershipTier membershipTier) {
         super(name, address, surname, email, birthDate);
 
-        ValidationUtil.notNull(accountName, "accountName");
+        ValidationUtil.notEmptyString(accountName, "accountName");
         ValidationUtil.notFuture(accountCreatedDate, "accountCreatedDate");
         ValidationUtil.nonNegative(totalSpent, "totalSpent");
         ValidationUtil.notNull(debitCard, "debitCard");
@@ -45,11 +45,31 @@ public class Customer extends Person {
         addToExtent(this);
     }
 
+    public Customer(String name, List<String> address, String surname, String email, LocalDate birthDate,
+                    String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard) {
+        super(name, address, surname, email, birthDate);
+
+        ValidationUtil.notEmptyString(accountName, "accountName");
+        ValidationUtil.notFuture(accountCreatedDate, "accountCreatedDate");
+        ValidationUtil.nonNegative(totalSpent, "totalSpent");
+        ValidationUtil.notNull(debitCard, "debitCard");
+
+        this.accountName = accountName;
+        this.accountCreatedDate = accountCreatedDate;
+        this.totalSpent = totalSpent;
+        this.debitCard = debitCard;
+        this.membershipCard = null;
+        this.membershipTier = null;
+
+        addToExtent(this);
+    }
+
     public String getAccountName() {
         return accountName;
     }
 
     public void setAccountName(String accountName) {
+        ValidationUtil.notEmptyString(accountName, "accountName");
         this.accountName = accountName;
     }
 
@@ -58,6 +78,7 @@ public class Customer extends Person {
     }
 
     public void setAccountCreatedDate(LocalDate accountCreatedDate) {
+        ValidationUtil.notFuture(accountCreatedDate, "accountCreatedDate");
         this.accountCreatedDate = accountCreatedDate;
     }
 
@@ -66,6 +87,7 @@ public class Customer extends Person {
     }
 
     public void setTotalSpent(double totalSpent) {
+        ValidationUtil.nonNegative(totalSpent, "totalSpent");
         this.totalSpent = totalSpent;
     }
 
@@ -74,23 +96,21 @@ public class Customer extends Person {
     }
 
     public void setDebitCard(DebitCard debitCard) {
+        ValidationUtil.notNull(debitCard, "debitCard");
         this.debitCard = debitCard;
+    }
+
+    public void setMembership(MembershipTier membershipTier, MembershipCard membershipCard) {
+        this.membershipTier = membershipTier;
+        this.membershipCard = membershipCard;
     }
 
     public MembershipCard getMembershipCard() {
         return membershipCard;
     }
 
-    public void setMembershipCard(MembershipCard membershipCard) {
-        this.membershipCard = membershipCard;
-    }
-
     public MembershipTier getMembershipTier() {
         return membershipTier;
-    }
-
-    public void setMembershipTier(MembershipTier membershipTier) {
-        this.membershipTier = membershipTier;
     }
 
     private static void addToExtent(Customer c) {
