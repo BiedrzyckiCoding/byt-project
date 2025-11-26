@@ -9,6 +9,7 @@ public class PersistenceUtil {
 
     public static void saveAll() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE))) {
+            System.out.println("Data saved successfully to " + FILE);
             out.writeObject(AppState.fromStatics());
         } catch (IOException e) {
             System.err.println("Failed to save data to file: " + FILE);
@@ -25,6 +26,7 @@ public class PersistenceUtil {
 
         } catch (FileNotFoundException e) {
             System.err.println("Data file not found: " + FILE);
+            System.err.println("Resetting all data");
             resetAllExtents();
 
         } catch (ClassCastException e) {

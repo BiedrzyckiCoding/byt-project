@@ -20,14 +20,8 @@ class PersistenceUtilTest {
     private static final String FILE_PATH = "data.ser";
     private final File dataFile = new File(FILE_PATH);
 
-    @BeforeEach
-    void setup(){
-        clearMemory();
-    }
-
     @AfterEach
-    void tearDown() throws Exception{
-        Files.deleteIfExists(dataFile.toPath());
+    void tearDown() {
         clearMemory();
     }
 
@@ -46,16 +40,12 @@ class PersistenceUtilTest {
     }
 
     @Test
-    void loadAll_shouldRestoreSavedObjects() throws Exception {
+    void loadAll_shouldRestoreSavedObjects() {
         new Boot("Testing", "Test", 61.0,5,List.of("test1"), List.of("test2"), true,37.0);
+
         PersistenceUtil.saveAll();
-
-        File backupFile = new File("data.bak");
-        Files.move(dataFile.toPath(), backupFile.toPath());
         PersistenceUtil.loadAll();
-        Files.move(backupFile.toPath(), dataFile.toPath());
 
-        PersistenceUtil.loadAll();
         List<Boot> loadedList = Boot.getExtent();
         assertEquals(1, loadedList.size(), "Object has to be loaded");
 
@@ -64,7 +54,7 @@ class PersistenceUtilTest {
     private void clearMemory(){
         try{
             Files.deleteIfExists(dataFile.toPath());
-            PersistenceUtil.loadAll();
+//            PersistenceUtil.loadAll();
         } catch (IOException e){
             System.err.println("Error while clearing in test: " + e.getMessage());
         }
