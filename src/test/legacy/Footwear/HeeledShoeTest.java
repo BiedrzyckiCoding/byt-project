@@ -1,4 +1,4 @@
-//package test.Footwear;
+//package test.legacy.Footwear;
 //
 //import main.Footwear.HeeledShoe;
 //import org.junit.jupiter.api.BeforeEach;

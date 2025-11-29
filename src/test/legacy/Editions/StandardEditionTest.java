@@ -1,4 +1,4 @@
-//package test.Editions;
+//package test.legacy.Editions;
 //
 //import main.Editions.StandardEdition;
 //import org.junit.jupiter.api.Assertions;

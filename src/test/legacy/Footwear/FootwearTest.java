@@ -1,4 +1,4 @@
-//package test.Footwear;
+//package test.legacy.Footwear;
 //
 //import main.Footwear.Footwear;
 //import main.Clothing.Item;

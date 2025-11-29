@@ -1,4 +1,4 @@
-//package test.Clothing;
+//package test.legacy.Clothing;
 //
 //import main.Clothing.Trousers;
 //import main.Enums.ClothingSize;

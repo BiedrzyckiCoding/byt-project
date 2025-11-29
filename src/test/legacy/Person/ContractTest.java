@@ -1,4 +1,4 @@
-//package test.Person;
+//package test.legacy.Person;
 //
 //import main.Enums.ContractType;
 //import main.MembershipTiers.MembershipCard;

@@ -1,4 +1,4 @@
-//package test.Clothing;
+//package test.legacy.Clothing;
 //
 //import main.Clothing.Hoodie;
 //import main.Enums.ClothingSize;

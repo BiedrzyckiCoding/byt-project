@@ -1,4 +1,4 @@
-//package test.Person;
+//package test.legacy.Person;
 //
 //import main.Person.Person;
 //import main.Utils.ValidationUtil;

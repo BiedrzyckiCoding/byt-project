@@ -1,4 +1,4 @@
-//package test.Person;
+//package test.legacy.Person;
 //
 //import main.Person.Contract;
 //import main.Person.Employee;

@@ -1,4 +1,4 @@
-package test.MembershipTiers;
+package test.legacy.MembershipTiers;
 
 public class PremiumTest {
     //same as BasicTest

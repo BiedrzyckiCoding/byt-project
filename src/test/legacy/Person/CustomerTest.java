@@ -1,4 +1,4 @@
-//package test.Person;
+//package test.legacy.Person;
 //
 //import main.MembershipTiers.Basic;
 //import main.MembershipTiers.MembershipCard;

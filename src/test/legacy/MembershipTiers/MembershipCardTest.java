@@ -1,4 +1,4 @@
-//package test.MembershipTiers;
+//package test.legacy.MembershipTiers;
 //
 //import main.MembershipTiers.MembershipCard;
 //import org.junit.jupiter.api.BeforeEach;
