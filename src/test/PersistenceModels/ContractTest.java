@@ -229,17 +229,4 @@ class ContractTest {
         assertEquals(1, Contract.getExtent().size());
     }
 
-//    @Test
-//    void setExtentReplacesInternalState() {
-//        List<Contract> list = new ArrayList<>();
-//        list.add(new Contract(
-//                ContractType.EMPLOYMENT,
-//                LocalDate.of(2020, 1, 1),
-//                LocalDate.of(2021, 1, 1)
-//        ));
-//
-//        Contract.setExtent(list);
-//
-//        assertEquals(1, Contract.getExtent().size());
-//    }
 }

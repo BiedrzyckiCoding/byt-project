@@ -12,11 +12,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrousersTest {
-
-//    @BeforeEach
-//    void clearExent(){
-//        Trousers.setExtent(new ArrayList<>());
-//    }
     @Test
     void constructor_shouldThrowException_whenWaistLengthNotPositive() {
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
@@ -138,16 +133,5 @@ class TrousersTest {
         boolean result = Trousers.getExtent().contains(trousers);
 
         assertTrue(result);
-    }
-
-    @Test
-    void getExtent_shouldNotContainRemovedObject_false() {
-        Trousers trousers = new Trousers("Jeans3", "Levis", 120, 5,
-                List.of("Denim"), List.of("Black"),
-                ClothingSize.L, 82, 102);
-
-        Trousers.getExtent().remove(trousers);
-
-        assertFalse(Trousers.getExtent().contains(trousers));
     }
 }

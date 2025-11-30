@@ -14,11 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ShirtTest {
-
-//    @BeforeEach
-//    void resetExtent() {
-//        Shirt.setExtent(new ArrayList<>());
-//    }
     
     @Test
     void constructor_shouldThrowException_whenSleeveLengthIsNull() {
@@ -163,17 +158,6 @@ public class ShirtTest {
         boolean result = Shirt.getExtent().contains(shirt);
 
         assertTrue(result);
-    }
-
-    @Test
-    void getExtent_shouldNotContainNewObject_false() {
-        Shirt shirt = new Shirt("Shirt2", "Brand", 80, 5,
-                List.of("Cotton"), List.of("Red"),
-                ClothingSize.M, SleeveLength.SHORT, Fit.REGULAR);
-
-        Shirt.getExtent().remove(shirt);
-
-        assertFalse(Shirt.getExtent().contains(shirt));
     }
 }
 

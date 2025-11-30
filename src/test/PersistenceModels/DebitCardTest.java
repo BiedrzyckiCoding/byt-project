@@ -11,11 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DebitCardTest {
 
-//    @BeforeEach
-//    void resetExtent() {
-//        DebitCard.setExtent(new ArrayList<>());
-//    }
-
     @Test
     void constructor_ShouldAddCardToExtent() {
         new DebitCard("1234", LocalDate.now(), "999");

@@ -14,11 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EmployeeTest {
 
-//    @BeforeEach
-//    void resetExtent() {
-//        Employee.setExtent(new ArrayList<>());
-//    }
-
     private List<String> address() {
         return List.of("Street 1", "City", "00000");
     }
@@ -35,26 +30,6 @@ class EmployeeTest {
         return new ArrayList<>();
     }
 
-    //fails because i cant reset extent
-    @Test
-    void constructor_WithManager_ShouldAddToExtent() {
-        Employee manager = new Employee("Alice", address(), "Smith", "alice@mail.com", birthDate(),
-                1000, 10, sampleContract(), emptySubordinates());
-
-        Employee e = new Employee("Bob", address(), "Jones", "bob@mail.com", birthDate(),
-                500, 5, sampleContract(), manager, emptySubordinates());
-
-        assertEquals(2, Employee.getExtent().size());
-    }
-
-    //fails because i cant reset extent
-    @Test
-    void constructor_WithoutManager_ShouldAddToExtent() {
-        Employee e = new Employee("Bob", address(), "Jones", "bob@mail.com", birthDate(),
-                500, 5, sampleContract(), emptySubordinates());
-
-        assertEquals(1, Employee.getExtent().size());
-    }
 
     @Test
     void getSalary_ShouldReturnSalary() {

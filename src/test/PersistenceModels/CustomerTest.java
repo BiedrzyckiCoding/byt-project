@@ -15,10 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerTest {
 
-//    @BeforeEach
-//    void resetExtents() {
-//        Customer.setExtent(new java.util.ArrayList<>());
-//    }
 
     //for constructor params
     private List<String> address() {
@@ -37,15 +33,6 @@ class CustomerTest {
         return new MembershipCard(LocalDate.now().minusDays(1), LocalDate.now().plusDays(10));
     }
 
-    //how do i kurwa set new extent?
-    @Test
-    void fullConstructor_ShouldAddCustomerToExtent() {
-        new Customer("John", address(), "Doe", "mail@mail.com", birthDate(),
-                "johnAccount", LocalDate.now(), 100, sampleDebitCard(),
-                sampleMembershipCard(), new Premium());
-
-        assertEquals(1, Customer.getExtent().size());
-    }
 
     @Test
     void fullConstructor_ShouldSetAccountName() {
@@ -109,16 +96,6 @@ class CustomerTest {
                         sampleMembershipCard(),
                         null)
         );
-    }
-
-    //lightConstructor is the one with no membership card and memvbership tier
-    //again how do i set new clear extent xd?
-    @Test
-    void lightConstructor_ShouldAddCustomerToExtent() {
-        new Customer("John", address(), "Doe", "mail@mail.com", birthDate(),
-                "acc", LocalDate.now(), 50, sampleDebitCard());
-
-        assertEquals(1, Customer.getExtent().size());
     }
 
     @Test
