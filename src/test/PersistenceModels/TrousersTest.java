@@ -1,15 +1,22 @@
 package test.PersistenceModels;
 
 import main.Enums.ClothingSize;
+import main.PersistenceModels.HeeledShoe;
 import main.PersistenceModels.Trousers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrousersTest {
 
+//    @BeforeEach
+//    void clearExent(){
+//        Trousers.setExtent(new ArrayList<>());
+//    }
     @Test
     void constructor_shouldThrowException_whenWaistLengthNotPositive() {
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
