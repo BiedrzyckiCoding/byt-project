@@ -55,7 +55,6 @@ public class DebitCard implements Serializable {
     }
 
     public void setSecurityCode(String securityCode) {
-        ValidationUtil.notNull(securityCode, "securityCode");
         ValidationUtil.notEmptyString(securityCode, "securityCode");
 
         this.securityCode = securityCode;
