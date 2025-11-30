@@ -93,12 +93,17 @@ class DebitCardTest {
         assertEquals("555", dc.getSecurityCode());
     }
 
-    //setter doesnt work
     @Test
     void setSecurityCode_ShouldRejectEmpty() {
         DebitCard dc = new DebitCard("1111", LocalDate.now(), "999");
 
         assertThrows(IllegalArgumentException.class, () -> dc.setSecurityCode(""));
+    }
+    @Test
+    void setSecurityCode_ShouldRejectNull() {
+        DebitCard dc = new DebitCard("1111", LocalDate.now(), "999");
+
+        assertThrows(IllegalArgumentException.class, () -> dc.setSecurityCode(null));
     }
 
     @Test

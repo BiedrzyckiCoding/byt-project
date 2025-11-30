@@ -23,6 +23,7 @@ public class DebitCard implements Serializable {
         ValidationUtil.notEmptyString(cardNumber, "cardNumber");
         ValidationUtil.notNull(expirationDate, "expirationDate");
         ValidationUtil.notEmptyString(securityCode, "securityCode");
+        ValidationUtil.notNull(expirationDate, "securityCode");
 
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
@@ -54,7 +55,9 @@ public class DebitCard implements Serializable {
     }
 
     public void setSecurityCode(String securityCode) {
-        ValidationUtil.notNull(expirationDate, "expirationDate");
+        ValidationUtil.notNull(securityCode, "securityCode");
+        ValidationUtil.notEmptyString(securityCode, "securityCode");
+
         this.securityCode = securityCode;
     }
 
