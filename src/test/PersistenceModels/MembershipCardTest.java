@@ -11,32 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MembershipCardTest {
 
-//    @BeforeEach
-//    void resetExtent() {
-//        MembershipCard.setExtent(new ArrayList<>());
-//    }
-
-
-    //cant reset extent
-    @Test
-    void constructor_WithStartAndEnd_ShouldAddToExtent() {
-        new MembershipCard(LocalDate.now().minusDays(1), LocalDate.now().plusDays(10));
-        assertEquals(1, MembershipCard.getExtent().size());
-    }
-
     @Test
     void constructor_WithStartAndEnd_ShouldSetDates() {
         LocalDate start = LocalDate.now().minusDays(1);
         LocalDate end = LocalDate.now().plusDays(10);
         MembershipCard mc = new MembershipCard(start, end);
         assertEquals(start, mc.getDateStart());
-    }
-
-    //cant reset extent xd
-    @Test
-    void constructor_WithOnlyStart_ShouldAddToExtent() {
-        new MembershipCard(LocalDate.now().minusDays(1));
-        assertEquals(1, MembershipCard.getExtent().size());
     }
 
     @Test

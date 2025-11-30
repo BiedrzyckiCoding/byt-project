@@ -1,4 +1,4 @@
-package test.Order;
+package test.PersistenceModels;
 
 import main.PersistenceModels.Hoodie;
 import main.Clothing.Item;
@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ItemQuantityInOrderTest {
+class OrderTest {
 
     private Item sampleItem() {
         return new Hoodie("Hoodie1", "Nike", 100, 5,

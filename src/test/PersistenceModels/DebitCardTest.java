@@ -11,11 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DebitCardTest {
 
-//    @BeforeEach
-//    void resetExtent() {
-//        DebitCard.setExtent(new ArrayList<>());
-//    }
-
     @Test
     void constructor_ShouldAddCardToExtent() {
         new DebitCard("1234", LocalDate.now(), "999");
@@ -93,7 +88,6 @@ class DebitCardTest {
         assertEquals("555", dc.getSecurityCode());
     }
 
-    //setter doesnt work
     @Test
     void setSecurityCode_ShouldRejectEmpty() {
         DebitCard dc = new DebitCard("1111", LocalDate.now(), "999");

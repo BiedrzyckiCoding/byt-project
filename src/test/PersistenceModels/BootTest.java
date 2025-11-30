@@ -13,10 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BootTest {
 
-//    @BeforeEach
-//    void clearExent(){
-//        Boot.setExtent(new ArrayList<>());
-//    }
     @Test
     void constructor_shouldThrowException_whenPriceBelowMinimum() {
         assertThrows(IllegalArgumentException.class, () ->

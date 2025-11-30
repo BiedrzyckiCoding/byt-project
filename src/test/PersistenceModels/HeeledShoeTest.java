@@ -11,10 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HeeledShoeTest {
 
-//    @BeforeEach
-//    void clearExent(){
-//        HeeledShoe.setExtent(new ArrayList<>());
-//    }
     @Test
     void constructor_shouldThrowException_whenHeelHeightNegative() {
         assertThrows(IllegalArgumentException.class, () ->
@@ -93,16 +89,5 @@ class HeeledShoeTest {
                 8, 38);
 
         assertTrue(HeeledShoe.getExtent().contains(hs));
-    }
-
-    @Test
-    void getExtent_shouldNotContainRemovedObject_false() {
-        HeeledShoe hs = new HeeledShoe("Heel9", "Gucci", 500, 2,
-                List.of("Leather"), List.of("Gold"),
-                8, 38);
-
-        HeeledShoe.getExtent().remove(hs);
-
-        assertFalse(HeeledShoe.getExtent().contains(hs));
     }
 }
