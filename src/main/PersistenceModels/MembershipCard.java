@@ -1,5 +1,6 @@
 package main.PersistenceModels;
 
+import main.MembershipTiers.MembershipTier;
 import main.Utils.ValidationUtil;
 
 import java.io.Serial;
@@ -19,7 +20,12 @@ public class MembershipCard implements Serializable {
     private LocalDate dateStart;
     private LocalDate dateEnd;
 
-    public MembershipCard(LocalDate dateStart, LocalDate dateEnd) {
+    private Customer customer;
+
+
+    private MembershipTier membershipTier;
+
+    public MembershipCard(LocalDate dateStart, LocalDate dateEnd, Customer customer, MembershipTier membershipTier) {
         ValidationUtil.notNull(dateStart, "dateStart");
         ValidationUtil.notNull(dateEnd, "dateEnd");
         ValidationUtil.notFuture(dateStart, "dateStart");
@@ -28,15 +34,21 @@ public class MembershipCard implements Serializable {
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
 
+        customer.addMembershipTierToCustomer(this);
+        membershipTier.addCustomer(this);
+
         addToExtent(this);
     }
 
-    public MembershipCard(LocalDate dateStart) {
+    public MembershipCard(LocalDate dateStart,Customer customer, MembershipTier membershipTier) {
         ValidationUtil.notNull(dateStart, "dateStart");
         ValidationUtil.notFuture(dateStart, "dateStart");
 
         this.dateStart = dateStart;
         this.dateEnd = null;
+
+        customer.addMembershipTierToCustomer(this);
+        membershipTier.addCustomer(this);
 
         addToExtent(this);
     }
@@ -47,6 +59,18 @@ public class MembershipCard implements Serializable {
         ValidationUtil.dateOrder(dateStart, dateEnd);
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public MembershipTier getMembershipTier() {
+        return membershipTier;
+    }
+
+    public void setMembershipTier(MembershipTier membershipTier) {
+        this.membershipTier = membershipTier;
     }
 
     public LocalDate getDateEnd() {
@@ -67,4 +91,5 @@ public class MembershipCard implements Serializable {
     static void setExtent(List<MembershipCard> loaded) {
         extent = new ArrayList<>(loaded);
     }
+
 }
