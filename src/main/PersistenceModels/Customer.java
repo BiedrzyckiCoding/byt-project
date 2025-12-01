@@ -7,7 +7,9 @@ import main.Utils.ValidationUtil;
 import java.io.Serial;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Customer extends Person {
 
@@ -20,27 +22,28 @@ public class Customer extends Person {
     private LocalDate accountCreatedDate;
     private double totalSpent;
     private DebitCard debitCard;
-    private MembershipCard membershipCard;
-    private MembershipTier membershipTier;
+//    private MembershipCard membershipCard;
+//    private MembershipTier membershipTier;
+
+    private ArrayList<MembershipCard> membershipCards = new ArrayList<>();
 
     public Customer(String name, List<String> address, String surname, String email, LocalDate birthDate,
-                    String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard,
-                    MembershipCard membershipCard, MembershipTier membershipTier) {
+                    String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard,) {
         super(name, address, surname, email, birthDate);
 
         ValidationUtil.notEmptyString(accountName, "accountName");
         ValidationUtil.notFuture(accountCreatedDate, "accountCreatedDate");
         ValidationUtil.nonNegative(totalSpent, "totalSpent");
         ValidationUtil.notNull(debitCard, "debitCard");
-        ValidationUtil.notNull(membershipCard, "membershipCard");
-        ValidationUtil.notNull(membershipTier, "membershipTier");
+//        ValidationUtil.notNull(membershipCard, "membershipCard");
+//        ValidationUtil.notNull(membershipTier, "membershipTier");
 
         this.accountName = accountName;
         this.accountCreatedDate = accountCreatedDate;
         this.totalSpent = totalSpent;
         this.debitCard = debitCard;
-        this.membershipCard = membershipCard;
-        this.membershipTier = membershipTier;
+//        this.membershipCard = membershipCard;
+//        this.membershipTier = membershipTier;
 
         addToExtent(this);
     }
@@ -58,8 +61,8 @@ public class Customer extends Person {
         this.accountCreatedDate = accountCreatedDate;
         this.totalSpent = totalSpent;
         this.debitCard = debitCard;
-        this.membershipCard = null;
-        this.membershipTier = null;
+//        this.membershipCard = null;
+//        this.membershipTier = null;
 
         addToExtent(this);
     }
@@ -100,18 +103,18 @@ public class Customer extends Person {
         this.debitCard = debitCard;
     }
 
-    public void setMembership(MembershipTier membershipTier, MembershipCard membershipCard) {
-        this.membershipTier = membershipTier;
-        this.membershipCard = membershipCard;
-    }
+//    public void setMembership(MembershipTier membershipTier, MembershipCard membershipCard) {
+//        this.membershipTier = membershipTier;
+//        this.membershipCard = membershipCard;
+//    }
 
-    public MembershipCard getMembershipCard() {
-        return membershipCard;
-    }
-
-    public MembershipTier getMembershipTier() {
-        return membershipTier;
-    }
+//    public MembershipCard getMembershipCard() {
+//        return membershipCard;
+//    }
+//
+//    public MembershipTier getMembershipTier() {
+//        return membershipTier;
+//    }
 
     private static void addToExtent(Customer c) {
         if (c == null) throw new IllegalArgumentException("Customer cannot be null");
@@ -126,12 +129,34 @@ public class Customer extends Person {
         extent = new ArrayList<>(loaded);
     }
 
+    public void addMembershipTierToCustomer(MembershipCard membershipCard) {
+        membershipCards.add(membershipCard);
+    }
+
+    public ArrayList<MembershipCard> getMembershipTiers() {
+        return new ArrayList<>(membershipCards);
+    }
+
     public void updateAccountDetails() {
-        /* TODO */ }
+        /* TODO */
+    }
 
-    public void changeMembershipTier() {
-        /* TODO */ }
+    public void changeMembershipTier(MembershipTier membershipTier) {
+        if (isSameMembershipTier(membershipTier)){
+            throw new IllegalArgumentException("Cannot change to same tier !");
+        }
+        this.membershipCards.getLast().setMembershipTier(membershipTier);
+    }
 
-    public void purchaseMembership() {
-        /* TODO */ }
+    public void purchaseMembership(MembershipTier membershipTier) {
+        MembershipCard membershipCard = new MembershipCard(LocalDate.now(), this, membershipTier);
+    }
+
+    public void purchaseMembership(LocalDate dateEnd, MembershipTier membershipTier) {
+        MembershipCard membershipCard = new MembershipCard(LocalDate.now(), dateEnd ,this, membershipTier);
+    }
+
+    private boolean isSameMembershipTier(MembershipTier membershipTier){
+        return membershipTier == this.membershipCards.getLast().getMembershipTier();
+    }
 }

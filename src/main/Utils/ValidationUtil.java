@@ -1,5 +1,7 @@
 package main.Utils;
 
+import main.MembershipTiers.MembershipTier;
+
 import java.time.LocalDate;
 import java.util.List;
 
