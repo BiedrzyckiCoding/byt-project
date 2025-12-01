@@ -12,7 +12,6 @@ import org.junit.jupiter.api.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,7 +63,6 @@ class PersistenceUtilTest {
     void saveObject_withNonSerializableField() {
 
         new Hoodie("Poison", "Test", 100, 0, List.of("em1"), List.of("em1"), ClothingSize.S, true) {
-
             private final Thread nonSerializableField = new Thread();
         };
 
@@ -74,6 +72,23 @@ class PersistenceUtilTest {
 //        assertNotNull(PersistenceUtil.lastError);
         assertInstanceOf(IOException.class, PersistenceUtil.lastError);
         System.out.println("Error was caught: " + PersistenceUtil.lastError.getMessage());
+    }
+
+    @Test
+    @Order(4)
+    void loadObjects_whenFileIsDamaged() throws IOException {
+
+        new Hoodie("Poison", "Test", 100, 0, List.of("em1"), List.of("em1"), ClothingSize.S, true);
+        new Boot("Testing", "Test", 61.0,5,List.of("test1"), List.of("test2"), true,37.0);
+
+        PersistenceUtil.saveAll();
+
+        Files.writeString(dataFile.toPath(), "SHIT");
+
+        PersistenceUtil.loadAll();
+
+        assertInstanceOf(IOException.class, PersistenceUtil.lastError, "Error");
+        System.out.println("Expected error caught: " + PersistenceUtil.lastError.getMessage());
 
     }
 
