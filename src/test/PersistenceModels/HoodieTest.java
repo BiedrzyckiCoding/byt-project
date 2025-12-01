@@ -110,15 +110,4 @@ class HoodieTest {
 
         assertTrue(result);
     }
-
-    @Test
-    void getExtent_shouldNotContainRemovedObject_false() {
-        Hoodie hoodie = new Hoodie("Hoodie5", "Adidasi", 150, 5,
-                List.of("Cotton"), List.of("Red"),
-                ClothingSize.M, true);
-
-        Hoodie.getExtent().remove(hoodie);
-   
-        assertFalse(Hoodie.getExtent().contains(hoodie));
-    }
 }

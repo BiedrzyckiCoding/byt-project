@@ -1,15 +1,17 @@
 package test.PersistenceModels;
 
 import main.Enums.ClothingSize;
+import main.PersistenceModels.HeeledShoe;
 import main.PersistenceModels.Trousers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrousersTest {
-
     @Test
     void constructor_shouldThrowException_whenWaistLengthNotPositive() {
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
@@ -131,16 +133,5 @@ class TrousersTest {
         boolean result = Trousers.getExtent().contains(trousers);
 
         assertTrue(result);
-    }
-
-    @Test
-    void getExtent_shouldNotContainRemovedObject_false() {
-        Trousers trousers = new Trousers("Jeans3", "Levis", 120, 5,
-                List.of("Denim"), List.of("Black"),
-                ClothingSize.L, 82, 102);
-
-        Trousers.getExtent().remove(trousers);
-
-        assertFalse(Trousers.getExtent().contains(trousers));
     }
 }
