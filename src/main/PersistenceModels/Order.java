@@ -8,6 +8,7 @@ import main.Utils.ValidationUtil;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,20 +21,19 @@ public class Order implements Serializable {
 
     private OrderStatus status;
     private boolean discountApplied;
-    private LocalDate timestamp;
+    private LocalDateTime timestamp;
     private DeliveryType deliveryType;
     private Customer customer;
-    private List<ItemQuantityInOrder> items;
+    private List<ItemQuantityInOrder> items = new ArrayList<>();
 
-    public Order(List<ItemQuantityInOrder> items, Customer customer, DeliveryType deliveryType,
-                 LocalDate timestamp, OrderStatus status) {
+    public Order(Customer customer, DeliveryType deliveryType,
+                 LocalDateTime timestamp, OrderStatus status) {
         ValidationUtil.notNull(status, "status");
         ValidationUtil.notFuture(timestamp, "timestamp");
         ValidationUtil.notNull(deliveryType, "deliveryType");
         ValidationUtil.notNull(customer, "customer");
-        ValidationUtil.notNull(items, "items");
 
-        this.items = items;
+
         this.customer = customer;
         if (customer.getMembershipCard().getDateEnd() != null) {
             this.discountApplied = customer.getMembershipCard().getDateEnd().isAfter(LocalDate.now());
@@ -62,11 +62,11 @@ public class Order implements Serializable {
         return sum;
     }
 
-    public LocalDate getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDate timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         ValidationUtil.notFuture(timestamp, "timestamp");
         this.timestamp = timestamp;
     }
@@ -91,18 +91,33 @@ public class Order implements Serializable {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
+    void setCustomer(Customer customer) {
         ValidationUtil.notNull(customer, "customer");
         this.customer = customer;
     }
 
-    public List<ItemQuantityInOrder> getItems() {
-        return items;
+    void removeCustomer() {
+        this.customer = null;
     }
 
     public void setItems(List<ItemQuantityInOrder> items) {
         ValidationUtil.notNull(items, "items");
         this.items = items;
+    }
+
+    public void addItem(ItemQuantityInOrder item) {
+        if (items.contains(item)) {
+            throw new IllegalArgumentException("Item already exists for this order");
+        }
+        items.add(item);
+    }
+
+    public void removeItem(ItemQuantityInOrder item) {
+        items.remove(item);
+    }
+
+    public List<ItemQuantityInOrder> getItems() {
+        return new ArrayList<>(items);
     }
 
     private static void addToExtent(Order o) {

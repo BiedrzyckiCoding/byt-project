@@ -4,8 +4,7 @@ import main.PersistenceModels.MembershipCard;
 import main.Utils.ValidationUtil;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 public abstract class MembershipTier implements Serializable {
     private final double discount;
@@ -22,8 +21,10 @@ public abstract class MembershipTier implements Serializable {
         this.price = price;
     }
 
-    public void addCustomer(MembershipCard membershipCard){
-        membershipCards.add(membershipCard);
+    public void addMembershipCard(MembershipCard membershipCard){
+        if (!membershipCards.contains(membershipCard)){
+            membershipCards.add(membershipCard);
+        }
     }
 
     public double getDiscount() {

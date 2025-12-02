@@ -33,15 +33,7 @@ public class Contract implements Serializable {
     }
 
     public Contract(ContractType type, LocalDate employmentDate) {
-        ValidationUtil.notNull(type, "type");
-        ValidationUtil.notFuture(employmentDate, "employmentDate");
-        ValidationUtil.dateOrder(employmentDate, employmentDueDate);
-
-        this.type = type;
-        this.employmentDate = employmentDate;
-        this.employmentDueDate = null;
-
-        addToExtent(this);
+        this(type,employmentDate,null);
     }
 
     public ContractType getType() {

@@ -1,8 +1,10 @@
 package main.Clothing;
 
+import main.Order.ItemQuantityInOrder;
 import main.Utils.ValidationUtil;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Item implements Serializable {
@@ -12,6 +14,8 @@ public class Item implements Serializable {
     private int stockQuantity;
     private List<String> material;
     private List<String> color;
+
+    private List<ItemQuantityInOrder> items = new ArrayList<>();
 
     public Item(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color) {
         ValidationUtil.notEmptyString(name, "name");
@@ -81,6 +85,17 @@ public class Item implements Serializable {
     public void setColor(List<String> color) {
         ValidationUtil.nonEmptyList(color, "color");
         this.color = color;
+    }
+
+    public void addItem(ItemQuantityInOrder item) {
+        if (items.contains(item)) {
+            throw new IllegalArgumentException("Item already exists for this Item list");
+        }
+        items.add(item);
+    }
+
+    public void removeItem(ItemQuantityInOrder item) {
+        items.remove(item);
     }
 
     public void addItemToOrder() {

@@ -33,24 +33,17 @@ public class MembershipCard implements Serializable {
 
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
+        this.customer = customer;
+        this.membershipTier = membershipTier;
 
         customer.addMembershipTierToCustomer(this);
-        membershipTier.addCustomer(this);
+        membershipTier.addMembershipCard(this);
 
         addToExtent(this);
     }
 
     public MembershipCard(LocalDate dateStart,Customer customer, MembershipTier membershipTier) {
-        ValidationUtil.notNull(dateStart, "dateStart");
-        ValidationUtil.notFuture(dateStart, "dateStart");
-
-        this.dateStart = dateStart;
-        this.dateEnd = null;
-
-        customer.addMembershipTierToCustomer(this);
-        membershipTier.addCustomer(this);
-
-        addToExtent(this);
+        this(dateStart,null,customer,membershipTier);
     }
 
     public void setDates(LocalDate dateStart, LocalDate dateEnd) {
