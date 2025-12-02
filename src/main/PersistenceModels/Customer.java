@@ -6,10 +6,8 @@ import main.Utils.ValidationUtil;
 
 import java.io.Serial;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class Customer extends Person {
 
@@ -22,31 +20,9 @@ public class Customer extends Person {
     private LocalDate accountCreatedDate;
     private double totalSpent;
     private DebitCard debitCard;
-//    private MembershipCard membershipCard;
-//    private MembershipTier membershipTier;
 
+    private HashMap<LocalDateTime, Order> ordersByTimestamp = new HashMap<>();
     private ArrayList<MembershipCard> membershipCards = new ArrayList<>();
-
-    public Customer(String name, List<String> address, String surname, String email, LocalDate birthDate,
-                    String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard,) {
-        super(name, address, surname, email, birthDate);
-
-        ValidationUtil.notEmptyString(accountName, "accountName");
-        ValidationUtil.notFuture(accountCreatedDate, "accountCreatedDate");
-        ValidationUtil.nonNegative(totalSpent, "totalSpent");
-        ValidationUtil.notNull(debitCard, "debitCard");
-//        ValidationUtil.notNull(membershipCard, "membershipCard");
-//        ValidationUtil.notNull(membershipTier, "membershipTier");
-
-        this.accountName = accountName;
-        this.accountCreatedDate = accountCreatedDate;
-        this.totalSpent = totalSpent;
-        this.debitCard = debitCard;
-//        this.membershipCard = membershipCard;
-//        this.membershipTier = membershipTier;
-
-        addToExtent(this);
-    }
 
     public Customer(String name, List<String> address, String surname, String email, LocalDate birthDate,
                     String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard) {
@@ -61,8 +37,6 @@ public class Customer extends Person {
         this.accountCreatedDate = accountCreatedDate;
         this.totalSpent = totalSpent;
         this.debitCard = debitCard;
-//        this.membershipCard = null;
-//        this.membershipTier = null;
 
         addToExtent(this);
     }
@@ -103,18 +77,62 @@ public class Customer extends Person {
         this.debitCard = debitCard;
     }
 
-//    public void setMembership(MembershipTier membershipTier, MembershipCard membershipCard) {
-//        this.membershipTier = membershipTier;
-//        this.membershipCard = membershipCard;
-//    }
+    public MembershipCard getMembershipCard() {
+        return membershipCards.getLast();
+    }
 
-//    public MembershipCard getMembershipCard() {
-//        return membershipCard;
-//    }
-//
-//    public MembershipTier getMembershipTier() {
-//        return membershipTier;
-//    }
+    public MembershipTier getMembershipTier() {
+        return membershipCards.getLast().getMembershipTier();
+    }
+
+    public void addMembershipTierToCustomer(MembershipCard membershipCard) {
+        if (membershipCards.contains(membershipCard)) {
+            throw new IllegalArgumentException("Membership Card already exists for this customer");
+        }
+            membershipCards.add(membershipCard);
+    }
+
+    public ArrayList<MembershipCard> getMembershipTiers() {
+        return new ArrayList<>(membershipCards);
+    }
+
+    public void changeMembershipTier(MembershipTier newMembershipTier) {
+        if (isSameMembershipTier(newMembershipTier)) {
+            throw new IllegalArgumentException("Cannot change to same tier !");
+        }
+        this.membershipCards.getLast().setMembershipTier(newMembershipTier);
+    }
+
+    public void purchaseMembership(MembershipTier membershipTier) {
+        MembershipCard membershipCard = new MembershipCard(LocalDate.now(), this, membershipTier);
+    }
+
+    public void purchaseMembership(LocalDate dateEnd, MembershipTier membershipTier) {
+        MembershipCard membershipCard = new MembershipCard(LocalDate.now(), dateEnd, this, membershipTier);
+    }
+
+    public void addOrder(Order order) {
+        LocalDateTime key = order.getTimestamp();
+        if (ordersByTimestamp.containsKey(key)) {
+            throw new IllegalArgumentException("Order with same timestamp already exists for this customer");
+        }
+
+        ordersByTimestamp.put(key, order);
+        order.setCustomer(this);
+    }
+
+    public void removeOrder(Order order) {
+        ordersByTimestamp.remove(order.getTimestamp());
+        order.removeCustomer();
+    }
+
+    public Order getOrderByTimestamp(LocalDateTime t) {
+        return ordersByTimestamp.get(t);
+    }
+
+    private boolean isSameMembershipTier(MembershipTier membershipTier) {
+        return membershipTier == this.membershipCards.getLast().getMembershipTier();
+    }
 
     private static void addToExtent(Customer c) {
         if (c == null) throw new IllegalArgumentException("Customer cannot be null");
@@ -129,34 +147,7 @@ public class Customer extends Person {
         extent = new ArrayList<>(loaded);
     }
 
-    public void addMembershipTierToCustomer(MembershipCard membershipCard) {
-        membershipCards.add(membershipCard);
-    }
-
-    public ArrayList<MembershipCard> getMembershipTiers() {
-        return new ArrayList<>(membershipCards);
-    }
-
     public void updateAccountDetails() {
         /* TODO */
-    }
-
-    public void changeMembershipTier(MembershipTier membershipTier) {
-        if (isSameMembershipTier(membershipTier)){
-            throw new IllegalArgumentException("Cannot change to same tier !");
-        }
-        this.membershipCards.getLast().setMembershipTier(membershipTier);
-    }
-
-    public void purchaseMembership(MembershipTier membershipTier) {
-        MembershipCard membershipCard = new MembershipCard(LocalDate.now(), this, membershipTier);
-    }
-
-    public void purchaseMembership(LocalDate dateEnd, MembershipTier membershipTier) {
-        MembershipCard membershipCard = new MembershipCard(LocalDate.now(), dateEnd ,this, membershipTier);
-    }
-
-    private boolean isSameMembershipTier(MembershipTier membershipTier){
-        return membershipTier == this.membershipCards.getLast().getMembershipTier();
     }
 }

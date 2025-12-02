@@ -34,7 +34,7 @@ public class Main {
 
 
 
-        Hoodie h1 = new Hoodie(
+        /*Hoodie h1 = new Hoodie(
                 "Shadow Hoodie", "Nightwear", 59.99, 20,
                 List.of("Cotton", "Polyester"), List.of("Black"),
                 ClothingSize.L, true
@@ -204,7 +204,7 @@ public class Main {
                 List.of(), cu3,
                 DeliveryType.HOME_DELIVERY,
                 LocalDate.now(), OrderStatus.PROCESSING
-        );
+        );*/
     }
 
     private static void printExtentSizes() {

@@ -3,6 +3,7 @@ package main.Utils;
 import main.MembershipTiers.MembershipTier;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ValidationUtil {
@@ -27,6 +28,12 @@ public class ValidationUtil {
 
     public static void notFuture(LocalDate date, String field) {
         if (date.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException(field + " cannot be in the future.");
+        }
+    }
+
+    public static void notFuture(LocalDateTime dateTime, String field) {
+        if (dateTime.isAfter(LocalDateTime.now())) {
             throw new IllegalArgumentException(field + " cannot be in the future.");
         }
     }
