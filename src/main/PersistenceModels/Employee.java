@@ -6,6 +6,7 @@ import main.Utils.ValidationUtil;
 import java.io.Serial;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Employee extends Person {
@@ -17,23 +18,21 @@ public class Employee extends Person {
 
     private double salary;
     private int itemsSold;
-    private Contract contract;
     private Employee manager;
-    private List<Employee> subordinates;
+    private HashSet<Employee> subordinates = new HashSet<>();
+    private final HashSet<Contract> contractSet = new HashSet<>();
 
 
     public Employee(String name, List<String> address, String surname, String email,
-                    LocalDate birthDate, double salary, int itemsSold, Contract contract, Employee manager, List<Employee> subordinates) {
+                    LocalDate birthDate, double salary, int itemsSold, Employee manager, HashSet<Employee> subordinates) {
         super(name, address, surname, email, birthDate);
 
         ValidationUtil.nonNegative(salary, "salary");
         ValidationUtil.nonNegative(itemsSold, "itemsSold");
-        ValidationUtil.notNull(contract, "contract");
         ValidationUtil.notNull(subordinates, "subordinates");
 
         this.salary = salary;
         this.itemsSold = itemsSold;
-        this.contract = contract;
         this.manager = manager;
         this.subordinates = subordinates;
 
@@ -41,8 +40,19 @@ public class Employee extends Person {
     }
 
     public Employee(String name, List<String> address, String surname, String email,
-                    LocalDate birthDate, double salary, int itemsSold, Contract contract, List<Employee> subordinates) {
-        this(name, address, surname, email, birthDate, salary, itemsSold, contract, null, subordinates);
+                    LocalDate birthDate, double salary, int itemsSold, HashSet<Employee> subordinates) {
+        super(name, address, surname, email, birthDate);
+
+        ValidationUtil.nonNegative(salary, "salary");
+        ValidationUtil.nonNegative(itemsSold, "itemsSold");
+        ValidationUtil.notNull(subordinates, "subordinates");
+
+        this.salary = salary;
+        this.itemsSold = itemsSold;
+        this.manager = null;
+        this.subordinates = subordinates;
+
+        addToExtent(this);
     }
 
     public double getSalary() {
@@ -63,15 +73,6 @@ public class Employee extends Person {
         this.itemsSold = itemsSold;
     }
 
-    public Contract getContract() {
-        return contract;
-    }
-
-    public void setContract(Contract contract) {
-        ValidationUtil.notNull(contract, "contract");
-        this.contract = contract;
-    }
-
     public Employee getManager() {
         return manager;
     }
@@ -80,11 +81,11 @@ public class Employee extends Person {
         this.manager = manager;
     }
 
-    public List<Employee> getSubordinates() {
+    public HashSet<Employee> getSubordinates() {
         return subordinates;
     }
 
-    public void setSubordinates(List<Employee> subordinates) {
+    public void setSubordinates(HashSet<Employee> subordinates) {
         ValidationUtil.notNull(subordinates, "subordinates");
         this.subordinates = subordinates;
     }
@@ -102,11 +103,61 @@ public class Employee extends Person {
         extent = new ArrayList<>(loaded);
     }
 
-    public void addNewEmployee() {
-        /* TODO */
+    void addContract(Contract contract) {
+        if (contractSet.contains(contract)) {
+            throw new IllegalArgumentException("This contract is already own by this employee");
+        }
+        if (!contractSet.isEmpty()) {
+            throw new IllegalArgumentException("Employee can have only one contract");
+        }
+        contractSet.add(contract);
+    }
+
+    void removeContract() {
+        contractSet.clear();
     }
 
     public void deleteEmployee() {
+        for(Contract contract : contractSet) {
+            contract.deleteContract();
+        }
+        removeContract();
+        extent.remove(this);
+    }
+
+    public void assignManager(Employee manager) {
+        if (this.manager == manager){
+            throw new IllegalArgumentException("Manager cannot be the same");
+        }
+
+        if (this.manager != null) {
+            this.manager.removeSubordinateInternal(this);
+        }
+        manager.addSubordinateInternal(this);
+    }
+
+    public void addSubordinate(Employee subordinate) {
+        ValidationUtil.notNull(subordinate, "subordinate");
+        subordinate.assignManager(this);
+    }
+
+    private void addSubordinateInternal(Employee subordinate) {
+        if (subordinates.add(subordinate)) {
+            subordinate.setManagerInternal(this);
+        }
+    }
+
+    private void removeSubordinateInternal(Employee subordinate) {
+        if (subordinates.remove(subordinate)) {
+            subordinate.setManagerInternal(null);
+        }
+    }
+
+    private void setManagerInternal(Employee manager) {
+        this.manager = manager;
+    }
+
+    public void addNewEmployee() {
         /* TODO */
     }
 
@@ -122,3 +173,4 @@ public class Employee extends Person {
         /* TODO */
     }
 }
+
