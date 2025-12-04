@@ -25,7 +25,7 @@ class OrderTest {
         Customer c = new Customer("John", List.of("Addr"), "Doe", "mail", LocalDate.of(1990, 1, 1),
                 "acc", LocalDate.now(), 0, new DebitCard("123", LocalDate.now(), "999"));
 
-        c.purchaseMembership(new Basic());
+        c.purchaseMembership(LocalDate.now().plusDays(1), new Basic());
         return c;
     }
 
