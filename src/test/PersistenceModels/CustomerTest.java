@@ -39,8 +39,9 @@ class CustomerTest {
     private Customer createCustomer() {
         Customer c = new Customer("John", List.of("Address"), "Doe", "mail", LocalDate.of(1990, 1, 1),
                 "johnAccount", LocalDate.now(), 100, new DebitCard("123", LocalDate.now(), "999"));
+
         // Needed because creating an Order requires the Customer to have a membership
-        c.purchaseMembership(new Basic());
+        c.purchaseMembership(LocalDate.now().plusDays(1), new Basic());
         return c;
     }
 
@@ -109,7 +110,7 @@ class CustomerTest {
     void purchaseMembership_ShouldIncreaseBagSize() {
         Customer c = createStandardCustomer();
 
-        c.purchaseMembership(new Basic());
+        c.purchaseMembership(LocalDate.now().plusDays(1), new Basic());
 
         assertEquals(1, c.getMembershipTiers().size());
     }
@@ -118,7 +119,7 @@ class CustomerTest {
     void purchaseMembership_ShouldSetCorrectActiveTier() {
         Customer c = createStandardCustomer();
 
-        c.purchaseMembership(new Premium());
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Premium());
 
         assertTrue(c.getMembershipTier() instanceof Premium);
     }
@@ -126,9 +127,9 @@ class CustomerTest {
     @Test
     void purchaseMembership_ShouldStackHistoryInBag() {
         Customer c = createStandardCustomer();
-        c.purchaseMembership(new Basic()); //first purchase
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Basic()); //first purchase
 
-        c.purchaseMembership(new Premium()); //second purchase
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Premium()); //second purchase
 
         assertEquals(2, c.getMembershipTiers().size());
     }
@@ -136,8 +137,8 @@ class CustomerTest {
     @Test
     void getMembershipCard_ShouldReturnMostRecentFromBag() {
         Customer c = createStandardCustomer();
-        c.purchaseMembership(new Basic()); //old
-        c.purchaseMembership(new Premium()); //new (active)
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Basic()); //old
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Premium()); //new (active)
 
         MembershipCard currentCard = c.getMembershipCard();
 
@@ -147,8 +148,8 @@ class CustomerTest {
     @Test
     void getMembershipTiers_ShouldPreserveInsertionOrder() {
         Customer c = createStandardCustomer();
-        c.purchaseMembership(new Basic());
-        c.purchaseMembership(new Premium());
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Basic());
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Premium());
 
         MembershipCard firstCardInBag = c.getMembershipTiers().get(0);
 
@@ -158,7 +159,7 @@ class CustomerTest {
     @Test
     void addMembershipTierToCustomer_ShouldRejectDuplicateCardInstance() {
         Customer c = createStandardCustomer();
-        c.purchaseMembership(new Basic());
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Basic());
         MembershipCard existingCard = c.getMembershipCard();
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -176,7 +177,7 @@ class CustomerTest {
     @Test
     void changeMembershipTier_ShouldModifyActiveTierType() {
         Customer c = createStandardCustomer();
-        c.purchaseMembership(new Basic());
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Basic());
 
         c.changeMembershipTier(new Premium());
 
@@ -186,7 +187,7 @@ class CustomerTest {
     @Test
     void changeMembershipTier_ShouldNotIncreaseBagSize() {
         Customer c = createStandardCustomer();
-        c.purchaseMembership(new Basic());
+        c.purchaseMembership(LocalDate.now().plusDays(1),new Basic());
         int initialSize = c.getMembershipTiers().size();
 
         c.changeMembershipTier(new Premium());

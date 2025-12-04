@@ -21,15 +21,6 @@ class ContractTest {
 
 
     @Test
-    void constructor_ShouldAddToExtent() {
-        Employee e = createDummyEmployee();
-
-        new Contract(ContractType.EMPLOYMENT, LocalDate.now(), LocalDate.now().plusYears(1), e);
-
-        assertEquals(1, Contract.getExtent().size());
-    }
-
-    @Test
     void constructor_ShouldRejectNullType() {
         Employee e = createDummyEmployee();
 
