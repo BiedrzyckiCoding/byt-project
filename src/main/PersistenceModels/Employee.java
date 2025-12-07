@@ -98,6 +98,7 @@ public class Employee extends Person {
     }
 
 
+
     public void deleteEmployee() {
         for(Contract contract : contracts) {
             contract.deleteContract();
