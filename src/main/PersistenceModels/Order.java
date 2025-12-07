@@ -24,20 +24,14 @@ public class Order implements Serializable {
     private LocalDateTime timestamp;
     private DeliveryType deliveryType;
     private Customer customer;
-    private List<ItemQuantityInOrder> items = new ArrayList<>();
+    private List<ItemQuantityInOrder> itemListAssociation = new ArrayList<>();
 
-    public Order(Customer customer, DeliveryType deliveryType,
+    public Order(DeliveryType deliveryType,
                  LocalDateTime timestamp, OrderStatus status) {
         ValidationUtil.notNull(status, "status");
         ValidationUtil.notFuture(timestamp, "timestamp");
         ValidationUtil.notNull(deliveryType, "deliveryType");
-        ValidationUtil.notNull(customer, "customer");
 
-
-        this.customer = customer;
-        if (customer.getMembershipCard().getDateEnd() != null) {
-            this.discountApplied = customer.getMembershipCard().getDateEnd().isAfter(LocalDate.now());
-        } else this.discountApplied = false;
         this.deliveryType = deliveryType;
         this.timestamp = timestamp;
         this.status = status;
@@ -54,10 +48,17 @@ public class Order implements Serializable {
         this.status = status;
     }
 
+    public void isDiscountApplied() {
+        ValidationUtil.notNull(customer,"customer");
+        if (customer.getMembershipCard().getDateEnd() != null) {
+            this.discountApplied = customer.getMembershipCard().getDateEnd().isAfter(LocalDate.now());
+        } else this.discountApplied = false;
+    }
+
     public double getSumPrice() {
         double sum = 0;
-        for (ItemQuantityInOrder item : items) {
-            sum += item.getQuantity()*item.getItem().getPrice();
+        for (ItemQuantityInOrder item : itemListAssociation) {
+            sum += item.getQuantity() * item.getItem().getPrice();
         }
         return sum;
     }
@@ -91,7 +92,7 @@ public class Order implements Serializable {
         return customer;
     }
 
-    void setCustomer(Customer customer) {
+    void addCustomer(Customer customer) {
         ValidationUtil.notNull(customer, "customer");
         this.customer = customer;
     }
@@ -100,24 +101,19 @@ public class Order implements Serializable {
         this.customer = null;
     }
 
-    public void setItems(List<ItemQuantityInOrder> items) {
-        ValidationUtil.notNull(items, "items");
-        this.items = items;
-    }
-
-    public void addItem(ItemQuantityInOrder item) {
-        if (items.contains(item)) {
+    public void addItemToList(ItemQuantityInOrder itemList) {
+        if (itemListAssociation.contains(itemList)) {
             throw new IllegalArgumentException("Item already exists for this order");
         }
-        items.add(item);
+        itemListAssociation.add(itemList);
     }
 
-    public void removeItem(ItemQuantityInOrder item) {
-        items.remove(item);
+    public void removeItemFromList(ItemQuantityInOrder itemList) {
+        itemListAssociation.remove(itemList);
     }
 
-    public List<ItemQuantityInOrder> getItems() {
-        return new ArrayList<>(items);
+    public List<ItemQuantityInOrder> getItemListAssociation() {
+        return new ArrayList<>(itemListAssociation);
     }
 
     private static void addToExtent(Order o) {
