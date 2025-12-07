@@ -118,7 +118,7 @@ public class Customer extends Person {
         }
 
         ordersByTimestamp.put(key, order);
-        order.setCustomer(this);
+        order.addCustomer(this);
     }
 
     public void removeOrder(Order order) {

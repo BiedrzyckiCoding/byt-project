@@ -19,17 +19,21 @@ public class ItemQuantityInOrder implements Serializable {
         this.order = order;
         this.quantity = quantity;
 
-        order.addItem(this);
-        item.addItem(this);
+        order.addItemToList(this);
+        item.addItemToList(this);
+    }
+
+    public void remove() {
+        order.removeItemFromList(this);
+        item.removeItemFromList(this);
     }
 
     public Item getItem() {
         return item;
     }
 
-    public void setItem(Item item) {
-        ValidationUtil.notNull(item, "item");
-        this.item = item;
+    public Order getOrder() {
+        return order;
     }
 
     public double getQuantity() {

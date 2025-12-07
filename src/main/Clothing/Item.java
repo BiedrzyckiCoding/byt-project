@@ -15,7 +15,7 @@ public class Item implements Serializable {
     private List<String> material;
     private List<String> color;
 
-    private List<ItemQuantityInOrder> items = new ArrayList<>();
+    private List<ItemQuantityInOrder> itemListAssociation = new ArrayList<>();
 
     public Item(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color) {
         ValidationUtil.notEmptyString(name, "name");
@@ -87,15 +87,15 @@ public class Item implements Serializable {
         this.color = color;
     }
 
-    public void addItem(ItemQuantityInOrder item) {
-        if (items.contains(item)) {
+    public void addItemToList(ItemQuantityInOrder itemList) {
+        if (itemListAssociation.contains(itemList)) {
             throw new IllegalArgumentException("Item already exists for this Item list");
         }
-        items.add(item);
+        itemListAssociation.add(itemList);
     }
 
-    public void removeItem(ItemQuantityInOrder item) {
-        items.remove(item);
+    public void removeItemFromList(ItemQuantityInOrder itemList) {
+        itemListAssociation.remove(itemList);
     }
 
     public void addItemToOrder() {
