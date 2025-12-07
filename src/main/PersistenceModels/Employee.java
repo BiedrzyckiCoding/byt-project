@@ -19,28 +19,12 @@ public class Employee extends Person {
     private double salary;
     private int itemsSold;
     private Employee manager;
-    private HashSet<Employee> subordinates = new HashSet<>();
-    private final HashSet<Contract> contractSet = new HashSet<>();
+    private HashSet<Employee> subordinates;
+    private HashSet<Contract> contracts;
 
 
     public Employee(String name, List<String> address, String surname, String email,
-                    LocalDate birthDate, double salary, int itemsSold, Employee manager, HashSet<Employee> subordinates) {
-        super(name, address, surname, email, birthDate);
-
-        ValidationUtil.nonNegative(salary, "salary");
-        ValidationUtil.nonNegative(itemsSold, "itemsSold");
-        ValidationUtil.notNull(subordinates, "subordinates");
-
-        this.salary = salary;
-        this.itemsSold = itemsSold;
-        this.manager = manager;
-        this.subordinates = subordinates;
-
-        addToExtent(this);
-    }
-
-    public Employee(String name, List<String> address, String surname, String email,
-                    LocalDate birthDate, double salary, int itemsSold, HashSet<Employee> subordinates) {
+                    LocalDate birthDate, double salary, int itemsSold) {
         super(name, address, surname, email, birthDate);
 
         ValidationUtil.nonNegative(salary, "salary");
@@ -50,7 +34,9 @@ public class Employee extends Person {
         this.salary = salary;
         this.itemsSold = itemsSold;
         this.manager = null;
-        this.subordinates = subordinates;
+        this.subordinates = null;
+        this.contracts = null;
+
 
         addToExtent(this);
     }
@@ -77,17 +63,8 @@ public class Employee extends Person {
         return manager;
     }
 
-    public void setManager(Employee manager) {
-        this.manager = manager;
-    }
-
     public HashSet<Employee> getSubordinates() {
         return subordinates;
-    }
-
-    public void setSubordinates(HashSet<Employee> subordinates) {
-        ValidationUtil.notNull(subordinates, "subordinates");
-        this.subordinates = subordinates;
     }
 
     private static void addToExtent(Employee e) {
@@ -104,24 +81,28 @@ public class Employee extends Person {
     }
 
     void addContract(Contract contract) {
-        if (contractSet.contains(contract)) {
+        ValidationUtil.notNull(contract, "contract");
+        if (contracts == null) {contracts = new HashSet<>();}
+        if (contracts.contains(contract)) {
             throw new IllegalArgumentException("This contract is already own by this employee");
         }
-        if (!contractSet.isEmpty()) {
-            throw new IllegalArgumentException("Employee can have only one contract");
-        }
-        contractSet.add(contract);
+        contracts.add(contract);
     }
 
-    void removeContract() {
-        contractSet.clear();
+    void removeContract(Contract contract) {
+        ValidationUtil.notNull(contract, "contract");
+        if (!contracts.contains(contract)) {throw new IllegalArgumentException("This contract is not own by this employee");}
+        for (Contract c : contracts) {
+            if (c.equals(contract)) {
+                contracts.remove(c);
+            }
+        }
     }
 
     public void deleteEmployee() {
-        for(Contract contract : contractSet) {
+        for(Contract contract : contracts) {
             contract.deleteContract();
         }
-        removeContract();
         extent.remove(this);
     }
 
@@ -138,10 +119,18 @@ public class Employee extends Person {
 
     public void addSubordinate(Employee subordinate) {
         ValidationUtil.notNull(subordinate, "subordinate");
+        if (this == subordinate) {throw new IllegalArgumentException("Employee cannot be cannot be its own subordinate");}
         subordinate.assignManager(this);
     }
 
+    public void removeSubordinate(Employee subordinate) {
+        ValidationUtil.notNull(subordinate, "subordinate");
+        if(!this.subordinates.contains(subordinate)) {throw new IllegalArgumentException("This employee doesnt have a this subordinate");}
+        this.removeSubordinateInternal(subordinate);
+    }
+
     private void addSubordinateInternal(Employee subordinate) {
+        if (subordinates == null) subordinates = new HashSet<>();
         if (subordinates.add(subordinate)) {
             subordinate.setManagerInternal(this);
         }
