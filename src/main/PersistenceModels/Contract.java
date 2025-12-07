@@ -91,7 +91,11 @@ public class Contract implements Serializable {
 
     public void deleteContract() {
         employee.removeContract(this);
-        extent.remove(this);
     }
+
+    public static void removeFromExtent(Contract contract) {
+        extent.remove(contract);
+    }
+
 }
 

@@ -92,12 +92,11 @@ public class Employee extends Person {
     void removeContract(Contract contract) {
         ValidationUtil.notNull(contract, "contract");
         if (!contracts.contains(contract)) {throw new IllegalArgumentException("This contract is not own by this employee");}
-        for (Contract c : contracts) {
-            if (c.equals(contract)) {
-                contracts.remove(c);
-            }
+        if (contracts.remove(contract)) {
+            Contract.removeFromExtent(contract);
         }
     }
+
 
     public void deleteEmployee() {
         for(Contract contract : contracts) {
