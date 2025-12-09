@@ -2,6 +2,7 @@ package test.PersistenceModels;
 
 import main.Enums.ContractType;
 import main.PersistenceModels.Contract;
+import main.PersistenceModels.Employee;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,19 +13,20 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContractTest {
-
-//    @BeforeEach
-//    void resetExtent() {
-//        Contract.setExtent(new ArrayList<>());
-//    }
-    
-
+    private Employee mockEmployee = new Employee(
+            "jarvis",
+            List.of("black lane 1"),
+            "cameron", "jcameron@gmail.com",
+            LocalDate.of(1990, 1, 1),
+            67,
+            1);
     @Test
     void constructorAddsToExtent() {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
+                LocalDate.of(2024, 1, 1),
+                mockEmployee // added employee
         );
 
         assertEquals(1, Contract.getExtent().size());
@@ -36,7 +38,8 @@ class ContractTest {
                 new Contract(
                         null,
                         LocalDate.of(2023, 1, 1),
-                        LocalDate.of(2024, 1, 1)
+                        LocalDate.of(2024, 1, 1),
+                        mockEmployee // Added employee
                 )
         );
     }
@@ -47,7 +50,8 @@ class ContractTest {
                 new Contract(
                         ContractType.EMPLOYMENT,
                         LocalDate.now().plusDays(1),
-                        LocalDate.now().plusDays(2)
+                        LocalDate.now().plusDays(2),
+                        mockEmployee // Added employee
                 )
         );
     }
@@ -58,17 +62,18 @@ class ContractTest {
                 new Contract(
                         ContractType.EMPLOYMENT,
                         LocalDate.of(2024, 1, 1),
-                        LocalDate.of(2023, 1, 1)
+                        LocalDate.of(2023, 1, 1),
+                        mockEmployee // Added employee
                 )
         );
     }
-
 
     @Test
     void constructorWithoutDueDateSetsDueDateNull() {
         Contract c = new Contract(
                 ContractType.COMMISSION,
-                LocalDate.of(2023, 1, 1)
+                LocalDate.of(2023, 1, 1),
+                mockEmployee // Added employee
         );
 
         assertNull(c.getEmploymentDueDate());
@@ -79,7 +84,8 @@ class ContractTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new Contract(
                         null,
-                        LocalDate.of(2023, 1, 1)
+                        LocalDate.of(2023, 1, 1),
+                        mockEmployee // Added employee
                 )
         );
     }
@@ -89,7 +95,8 @@ class ContractTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new Contract(
                         ContractType.COMMISSION,
-                        LocalDate.now().plusDays(1)
+                        LocalDate.now().plusDays(1),
+                        mockEmployee // Added employee
                 )
         );
     }
@@ -99,7 +106,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
+                LocalDate.of(2024, 1, 1),
+                mockEmployee // Added employee
         );
 
         assertEquals(ContractType.EMPLOYMENT, c.getType());
@@ -111,7 +119,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 d,
-                LocalDate.of(2024, 1, 1)
+                LocalDate.of(2024, 1, 1),
+                mockEmployee // Added employee
         );
 
         assertEquals(d, c.getEmploymentDate());
@@ -123,7 +132,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2023, 1, 1),
-                due
+                due,
+                mockEmployee // Added employee
         );
 
         assertEquals(due, c.getEmploymentDueDate());
@@ -135,7 +145,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
+                LocalDate.of(2024, 1, 1),
+                mockEmployee // Added employee
         );
 
         c.setType(ContractType.COMMISSION);
@@ -148,7 +159,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
+                LocalDate.of(2024, 1, 1),
+                mockEmployee // Added employee
         );
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -162,7 +174,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2020, 1, 1),
-                LocalDate.of(2021, 1, 1)
+                LocalDate.of(2021, 1, 1),
+                mockEmployee // Added employee
         );
 
         LocalDate newStart = LocalDate.of(2022, 2, 2);
@@ -178,7 +191,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2020, 1, 1),
-                LocalDate.of(2021, 1, 1)
+                LocalDate.of(2021, 1, 1),
+                mockEmployee // Added employee
         );
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -191,7 +205,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2020, 1, 1),
-                LocalDate.of(2021, 1, 1)
+                LocalDate.of(2021, 1, 1),
+                mockEmployee // Added employee
         );
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -204,7 +219,8 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2020, 1, 1),
-                LocalDate.of(2021, 1, 1)
+                LocalDate.of(2021, 1, 1),
+                mockEmployee // Added employee
         );
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -220,13 +236,14 @@ class ContractTest {
         Contract c = new Contract(
                 ContractType.EMPLOYMENT,
                 LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
+                LocalDate.of(2024, 1, 1),
+                mockEmployee // Added employee
         );
 
+        // This checks if getExtent returns a safe copy (modifying it doesn't affect the real extent)
         List<Contract> copy = Contract.getExtent();
         copy.clear();
 
         assertEquals(1, Contract.getExtent().size());
     }
-
 }
