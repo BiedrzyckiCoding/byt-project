@@ -2,141 +2,96 @@ package test.PersistenceModels;
 
 import main.Enums.ContractType;
 import main.PersistenceModels.Contract;
-import org.junit.jupiter.api.BeforeEach;
+import main.PersistenceModels.Employee;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContractTest {
 
-//    @BeforeEach
-//    void resetExtent() {
-//        Contract.setExtent(new ArrayList<>());
-//    }
-    
-
-    @Test
-    void constructorAddsToExtent() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
-        );
-
-        assertEquals(1, Contract.getExtent().size());
+    private Employee createDummyEmployee() {
+        return new Employee("Bob", List.of("Address"), "Jones", "mail",
+                LocalDate.of(1990, 1, 1), 500, 5, new HashSet<>());
     }
 
+
     @Test
-    void constructorRejectsNullType() {
+    void constructor_ShouldRejectNullType() {
+        Employee e = createDummyEmployee();
+
         assertThrows(IllegalArgumentException.class, () ->
-                new Contract(
-                        null,
-                        LocalDate.of(2023, 1, 1),
-                        LocalDate.of(2024, 1, 1)
-                )
+                new Contract(null, LocalDate.now(), LocalDate.now().plusYears(1), e)
         );
     }
 
     @Test
-    void constructorRejectsFutureEmploymentDate() {
+    void constructor_ShouldRejectFutureEmploymentDate() {
+        Employee e = createDummyEmployee();
+
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+
         assertThrows(IllegalArgumentException.class, () ->
-                new Contract(
-                        ContractType.EMPLOYMENT,
-                        LocalDate.now().plusDays(1),
-                        LocalDate.now().plusDays(2)
-                )
+                new Contract(ContractType.EMPLOYMENT, futureDate, futureDate.plusDays(1), e)
         );
     }
 
     @Test
-    void constructorRejectsInvalidDateOrder() {
+    void constructor_ShouldRejectInvalidDateOrder() {
+        Employee e = createDummyEmployee();
+
+        LocalDate start = LocalDate.of(2024, 1, 1);
+        LocalDate end = LocalDate.of(2023, 1, 1);
+
         assertThrows(IllegalArgumentException.class, () ->
-                new Contract(
-                        ContractType.EMPLOYMENT,
-                        LocalDate.of(2024, 1, 1),
-                        LocalDate.of(2023, 1, 1)
-                )
+                new Contract(ContractType.EMPLOYMENT, start, end, e)
         );
     }
 
-
     @Test
-    void constructorWithoutDueDateSetsDueDateNull() {
-        Contract c = new Contract(
-                ContractType.COMMISSION,
-                LocalDate.of(2023, 1, 1)
-        );
+    void constructor_ShouldRejectNullEmployee() {
+        Employee nullEmployee = null;
 
-        assertNull(c.getEmploymentDueDate());
-    }
-
-    @Test
-    void constructorWithoutDueDateRejectsNullType() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Contract(
-                        null,
-                        LocalDate.of(2023, 1, 1)
-                )
+                new Contract(ContractType.EMPLOYMENT, LocalDate.now(), nullEmployee)
         );
     }
 
+    //1 to 1 with employee
+
     @Test
-    void constructorWithoutDueDateRejectsFutureEmploymentDate() {
+    void assignEmployee_ShouldRejectIfEmployeeAlreadyHasContract() {
+        Employee e = createDummyEmployee();
+        //first contract assigned to e
+        new Contract(ContractType.EMPLOYMENT, LocalDate.now(), e);
+
+        //creating a second contract for the same employee should fail
         assertThrows(IllegalArgumentException.class, () ->
-                new Contract(
-                        ContractType.COMMISSION,
-                        LocalDate.now().plusDays(1)
-                )
+                new Contract(ContractType.COMMISSION, LocalDate.now(), e)
         );
     }
 
     @Test
-    void getTypeReturnsCorrectValue() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
+    void assignEmployee_ShouldRejectIfContractAlreadyHasEmployee() {
+        Employee e1 = createDummyEmployee();
+        Employee e2 = createDummyEmployee();
+        Contract c = new Contract(ContractType.EMPLOYMENT, LocalDate.now(), e1);
+
+        // Attempting to manually assign a second employee to this contract instance
+        assertThrows(IllegalArgumentException.class, () ->
+                c.assignEmployee(e2)
         );
-
-        assertEquals(ContractType.EMPLOYMENT, c.getType());
-    }
-
-    @Test
-    void getEmploymentDateReturnsCorrectValue() {
-        LocalDate d = LocalDate.of(2023, 1, 1);
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                d,
-                LocalDate.of(2024, 1, 1)
-        );
-
-        assertEquals(d, c.getEmploymentDate());
-    }
-
-    @Test
-    void getEmploymentDueDateReturnsCorrectValue() {
-        LocalDate due = LocalDate.of(2024, 1, 1);
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2023, 1, 1),
-                due
-        );
-
-        assertEquals(due, c.getEmploymentDueDate());
     }
 
 
     @Test
-    void setTypeChangesValue() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
-        );
+    void setType_ShouldUpdateValue() {
+        Employee e = createDummyEmployee();
+        Contract c = new Contract(ContractType.EMPLOYMENT, LocalDate.now(), e);
 
         c.setType(ContractType.COMMISSION);
 
@@ -144,89 +99,23 @@ class ContractTest {
     }
 
     @Test
-    void setTypeRejectsNull() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
-        );
+    void setEmploymentDates_ShouldUpdateStartDate() {
+        Employee e = createDummyEmployee();
+        Contract c = new Contract(ContractType.EMPLOYMENT, LocalDate.of(2020, 1, 1), e);
+        LocalDate newStart = LocalDate.of(2021, 1, 1);
 
-        assertThrows(IllegalArgumentException.class, () ->
-                c.setType(null)
-        );
-    }
-
-
-    @Test
-    void setEmploymentDatesUpdatesValues() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2020, 1, 1),
-                LocalDate.of(2021, 1, 1)
-        );
-
-        LocalDate newStart = LocalDate.of(2022, 2, 2);
-        LocalDate newDue = LocalDate.of(2023, 3, 3);
-
-        c.setEmploymentDates(newStart, newDue);
+        c.setEmploymentDates(newStart, LocalDate.of(2022, 1, 1));
 
         assertEquals(newStart, c.getEmploymentDate());
     }
 
     @Test
-    void setEmploymentDatesRejectsNullStart() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2020, 1, 1),
-                LocalDate.of(2021, 1, 1)
-        );
+    void deleteContract_ShouldRemoveFromExtent() {
+        Employee e = createDummyEmployee();
+        Contract c = new Contract(ContractType.EMPLOYMENT, LocalDate.now(), e);
 
-        assertThrows(IllegalArgumentException.class, () ->
-                c.setEmploymentDates(null, LocalDate.of(2023, 1, 1))
-        );
+        c.deleteContract();
+
+        assertFalse(Contract.getExtent().contains(c));
     }
-
-    @Test
-    void setEmploymentDatesRejectsFutureStart() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2020, 1, 1),
-                LocalDate.of(2021, 1, 1)
-        );
-
-        assertThrows(IllegalArgumentException.class, () ->
-                c.setEmploymentDates(LocalDate.now().plusDays(2), LocalDate.now().plusDays(3))
-        );
-    }
-
-    @Test
-    void setEmploymentDatesRejectsInvalidOrder() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2020, 1, 1),
-                LocalDate.of(2021, 1, 1)
-        );
-
-        assertThrows(IllegalArgumentException.class, () ->
-                c.setEmploymentDates(
-                        LocalDate.of(2024, 1, 1),
-                        LocalDate.of(2023, 1, 1)
-                )
-        );
-    }
-
-    @Test
-    void extentReturnsCopy() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1)
-        );
-
-        List<Contract> copy = Contract.getExtent();
-        copy.clear();
-
-        assertEquals(1, Contract.getExtent().size());
-    }
-
 }

@@ -101,15 +101,4 @@ class BootTest {
 
         assertTrue(Boot.getExtent().contains(boot));
     }
-
-//    @Test
-//    void getExtent_shouldNotContainRemovedObject_false() {
-//        Boot boot = new Boot("Boot10", "Gucci", 300, 5,
-//                List.of("Leather"), List.of("Black"),
-//                true, 45);
-//
-//        Boot.getExtent().remove(boot);
-//
-//        assertFalse(Boot.getExtent().contains(boot));
-//    } -> remove all of this
 }
