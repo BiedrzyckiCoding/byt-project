@@ -3,6 +3,7 @@ package test.PersistenceModels;
 import main.Enums.ContractType;
 import main.PersistenceModels.Contract;
 import main.PersistenceModels.Employee;
+import main.PersistenceModels.PersistenceUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +25,11 @@ class EmployeeTest {
 
     private Employee createEmployee(String name, double salary) {
         return new Employee(name, createAddress(), "Jones", "mail@mail.com", createBirthDate(), salary, 5);
+    }
+
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
     }
 
 
@@ -100,6 +106,7 @@ class EmployeeTest {
     @Test
     void assignManager_ShouldPreventSelfAssignment() {
         Employee e = createEmployee("Bob", 500.0);
+        e.assignManager(e);
         assertThrows(IllegalArgumentException.class, () -> e.assignManager(e));
     }
 

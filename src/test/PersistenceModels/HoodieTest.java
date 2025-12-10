@@ -2,6 +2,9 @@ package test.PersistenceModels;
 
 import main.Enums.ClothingSize;
 import main.PersistenceModels.Hoodie;
+import main.PersistenceModels.PersistenceUtil;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -9,6 +12,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HoodieTest {
+
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
 
     @Test
     void constructor_shouldThrowException_whenClothingSizeIsNull() {

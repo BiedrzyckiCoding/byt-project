@@ -3,8 +3,8 @@ package test.PersistenceModels;
 import main.Enums.ContractType;
 import main.PersistenceModels.Contract;
 import main.PersistenceModels.Employee;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import main.PersistenceModels.PersistenceUtil;
+import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContractTest {
+
     private Employee mockEmployee = new Employee(
             "jarvis",
             List.of("black lane 1"),
@@ -20,6 +21,12 @@ class ContractTest {
             LocalDate.of(1990, 1, 1),
             67,
             1);
+
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
+
     @Test
     void constructorAddsToExtent() {
         Contract c = new Contract(
@@ -28,6 +35,22 @@ class ContractTest {
                 LocalDate.of(2024, 1, 1),
                 mockEmployee // added employee
         );
+
+        assertEquals(1, Contract.getExtent().size());
+    }
+
+    @Test
+    void extentReturnsCopy() {
+        Contract c = new Contract(
+                ContractType.EMPLOYMENT,
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2024, 1, 1),
+                mockEmployee // Added employee
+        );
+
+        // This checks if getExtent returns a safe copy (modifying it doesn't affect the real extent)
+        List<Contract> copy = Contract.getExtent();
+        copy.clear();
 
         assertEquals(1, Contract.getExtent().size());
     }
@@ -229,21 +252,5 @@ class ContractTest {
                         LocalDate.of(2023, 1, 1)
                 )
         );
-    }
-
-    @Test
-    void extentReturnsCopy() {
-        Contract c = new Contract(
-                ContractType.EMPLOYMENT,
-                LocalDate.of(2023, 1, 1),
-                LocalDate.of(2024, 1, 1),
-                mockEmployee // Added employee
-        );
-
-        // This checks if getExtent returns a safe copy (modifying it doesn't affect the real extent)
-        List<Contract> copy = Contract.getExtent();
-        copy.clear();
-
-        assertEquals(1, Contract.getExtent().size());
     }
 }

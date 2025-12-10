@@ -5,6 +5,8 @@ import main.MembershipTiers.MembershipTier;
 import main.PersistenceModels.Customer;
 import main.PersistenceModels.DebitCard;
 import main.PersistenceModels.MembershipCard;
+import main.PersistenceModels.PersistenceUtil;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MembershipCardTest {
 
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
 
     private DebitCard createDebitCard() {
         return new DebitCard("1234-5678-9012-3456", LocalDate.now().plusYears(2), "123");

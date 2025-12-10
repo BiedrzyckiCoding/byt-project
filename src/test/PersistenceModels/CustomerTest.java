@@ -4,10 +4,8 @@ import main.Enums.DeliveryType;
 import main.Enums.OrderStatus;
 import main.MembershipTiers.Basic;
 import main.MembershipTiers.Premium;
-import main.PersistenceModels.Customer;
-import main.PersistenceModels.DebitCard;
-import main.PersistenceModels.MembershipCard;
-import main.PersistenceModels.Order;
+import main.PersistenceModels.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +17,11 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerTest {
+
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
 
     private DebitCard createValidDebitCard() {
         return new DebitCard("1234-5678-9012-3456", LocalDate.now().plusYears(2), "123");

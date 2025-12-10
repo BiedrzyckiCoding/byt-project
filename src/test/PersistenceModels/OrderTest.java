@@ -3,13 +3,12 @@ package test.PersistenceModels;
 import main.Enums.DeliveryType;
 import main.Enums.OrderStatus;
 import main.MembershipTiers.Premium;
-import main.PersistenceModels.Customer;
-import main.PersistenceModels.Hoodie;
+import main.PersistenceModels.*;
 import main.Clothing.Item;
 import main.Enums.ClothingSize;
 import main.Order.ItemQuantityInOrder;
-import main.PersistenceModels.Order;
-import main.PersistenceModels.DebitCard;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -20,6 +19,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTest {
 
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
 
     private Hoodie createHoodie(String name, double price) {
         return new Hoodie(name, "Brand", price, 5, List.of("Cotton"), List.of("Black"), ClothingSize.M, true);

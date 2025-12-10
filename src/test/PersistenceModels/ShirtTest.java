@@ -3,7 +3,9 @@ package test.PersistenceModels;
 import main.Enums.ClothingSize;
 import main.Enums.Fit;
 import main.Enums.SleeveLength;
+import main.PersistenceModels.PersistenceUtil;
 import main.PersistenceModels.Shirt;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ShirtTest {
-    
+
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
+
     @Test
     void constructor_shouldThrowException_whenSleeveLengthIsNull() {
         Exception exception = assertThrows(IllegalArgumentException.class, () ->

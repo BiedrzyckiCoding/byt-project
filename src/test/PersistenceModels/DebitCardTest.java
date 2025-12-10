@@ -1,15 +1,22 @@
 package test.PersistenceModels;
 
 import main.PersistenceModels.DebitCard;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import main.PersistenceModels.PersistenceUtil;
+import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class DebitCardTest {
+
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
 
     @Test
     void constructor_ShouldAddCardToExtent() {
