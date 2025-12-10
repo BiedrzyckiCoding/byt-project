@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,8 +80,6 @@ class ContractTest {
         );
     }
 
-    @Test
-    void constructorRejectsInvalidDateOrder() {
         assertThrows(IllegalArgumentException.class, () ->
                 new Contract(
                         ContractType.EMPLOYMENT,
@@ -113,8 +112,6 @@ class ContractTest {
         );
     }
 
-    @Test
-    void constructorWithoutDueDateRejectsFutureEmploymentDate() {
         assertThrows(IllegalArgumentException.class, () ->
                 new Contract(
                         ContractType.COMMISSION,
@@ -133,8 +130,8 @@ class ContractTest {
                 mockEmployee // Added employee
         );
 
-        assertEquals(ContractType.EMPLOYMENT, c.getType());
-    }
+        LocalDate start = LocalDate.of(2024, 1, 1);
+        LocalDate end = LocalDate.of(2023, 1, 1);
 
     @Test
     void getEmploymentDateReturnsCorrectValue() {
@@ -145,8 +142,6 @@ class ContractTest {
                 LocalDate.of(2024, 1, 1),
                 mockEmployee // Added employee
         );
-
-        assertEquals(d, c.getEmploymentDate());
     }
 
     @Test
@@ -159,9 +154,12 @@ class ContractTest {
                 mockEmployee // Added employee
         );
 
-        assertEquals(due, c.getEmploymentDueDate());
+        assertThrows(IllegalArgumentException.class, () ->
+                new Contract(ContractType.EMPLOYMENT, LocalDate.now(), nullEmployee)
+        );
     }
 
+    //1 to 1 with employee
 
     @Test
     void setTypeChangesValue() {
@@ -172,9 +170,10 @@ class ContractTest {
                 mockEmployee // Added employee
         );
 
-        c.setType(ContractType.COMMISSION);
-
-        assertEquals(ContractType.COMMISSION, c.getType());
+        //creating a second contract for the same employee should fail
+        assertThrows(IllegalArgumentException.class, () ->
+                new Contract(ContractType.COMMISSION, LocalDate.now(), e)
+        );
     }
 
     @Test
@@ -186,8 +185,9 @@ class ContractTest {
                 mockEmployee // Added employee
         );
 
+        // Attempting to manually assign a second employee to this contract instance
         assertThrows(IllegalArgumentException.class, () ->
-                c.setType(null)
+                c.assignEmployee(e2)
         );
     }
 
@@ -218,9 +218,7 @@ class ContractTest {
                 mockEmployee // Added employee
         );
 
-        assertThrows(IllegalArgumentException.class, () ->
-                c.setEmploymentDates(null, LocalDate.of(2023, 1, 1))
-        );
+        assertEquals(ContractType.COMMISSION, c.getType());
     }
 
     @Test
@@ -232,10 +230,7 @@ class ContractTest {
                 mockEmployee // Added employee
         );
 
-        assertThrows(IllegalArgumentException.class, () ->
-                c.setEmploymentDates(LocalDate.now().plusDays(2), LocalDate.now().plusDays(3))
-        );
-    }
+        c.setEmploymentDates(newStart, LocalDate.of(2022, 1, 1));
 
     @Test
     void setEmploymentDatesRejectsInvalidOrder() {

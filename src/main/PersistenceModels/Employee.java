@@ -109,6 +109,10 @@ public class Employee extends Person {
             throw new IllegalArgumentException("Manager cannot be the same");
         }
 
+//        if(manager == this.employee){
+//            throw new IllegalArgumentException("Manager cannot be the same as the employee");
+//        }
+
         if (this.manager != null) {
             this.manager.removeSubordinateInternal(this);
         }

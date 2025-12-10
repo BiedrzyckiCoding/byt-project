@@ -6,6 +6,10 @@ import main.MembershipTiers.Premium;
 import main.PersistenceModels.*;
 import main.Clothing.Item;
 import main.Enums.ClothingSize;
+import main.Enums.DeliveryType;
+import main.Enums.OrderStatus;
+import main.MembershipTiers.Basic;
+import main.MembershipTiers.Premium;
 import main.Order.ItemQuantityInOrder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,6 +91,7 @@ class OrderTest {
                 new Order(DeliveryType.STORE_PICKUP, LocalDateTime.now().plusDays(1), OrderStatus.ACCEPTED));
     }
 
+
     @Test
     void newItemQuantity_ShouldAutomaticallyAddToOrderList() {
         Order o = createOrder(DeliveryType.STORE_PICKUP);
@@ -114,6 +119,7 @@ class OrderTest {
 
         assertFalse(o.getItemListAssociation().contains(item));
     }
+
 
     @Test
     void getSumPrice_ShouldCalculateTotalCorrectly() {
