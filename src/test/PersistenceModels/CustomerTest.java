@@ -109,7 +109,6 @@ class CustomerTest {
         assertEquals(premiumTier, c.getMembershipTier());
     }
 
-    //bag tests:
     @Test
     void purchaseMembership_ShouldSetCurrentMembershipCard() {
         Customer c = createStandardCustomer();
