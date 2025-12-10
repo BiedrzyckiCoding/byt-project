@@ -29,7 +29,6 @@ public class Employee extends Person {
 
         ValidationUtil.nonNegative(salary, "salary");
         ValidationUtil.nonNegative(itemsSold, "itemsSold");
-        ValidationUtil.notNull(subordinates, "subordinates");
 
         this.salary = salary;
         this.itemsSold = itemsSold;

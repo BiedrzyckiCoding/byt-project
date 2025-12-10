@@ -3,6 +3,8 @@ package test.PersistenceModels;
 import main.Enums.ContractType;
 import main.PersistenceModels.Contract;
 import main.PersistenceModels.Employee;
+import main.PersistenceModels.PersistenceUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -14,158 +16,187 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EmployeeTest {
 
-    private List<String> address() {
+    private List<String> createAddress() {
         return List.of("Street 1", "City", "00000");
     }
 
-    private LocalDate birthDate() {
+    private LocalDate createBirthDate() {
         return LocalDate.of(1990, 1, 1);
     }
 
-    private HashSet<Employee> emptySubordinates() {
-        return new HashSet<>();
+    private Employee createEmployee(String name, double salary) {
+        return new Employee(name, createAddress(), "Jones", "mail@mail.com", createBirthDate(), salary, 5);
     }
 
-    private Employee createEmployee() {
-        return new Employee("Bob", address(), "Jones", "bob@mail.com", birthDate(),
-                500, 5, emptySubordinates());
-    }
-
-    @Test
-    void getSalary_ShouldReturnCorrectValue() {
-        Employee e = createEmployee();
-
-        assertEquals(500, e.getSalary());
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
     }
 
     @Test
-    void setSalary_ShouldUpdateValue() {
-        Employee e = createEmployee();
-
-        e.setSalary(600);
-
-        assertEquals(600, e.getSalary());
+    void constructor_ShouldSetSalary() {
+        Employee e = createEmployee("Bob", 500.0);
+        assertEquals(500.0, e.getSalary());
     }
 
     @Test
-    void setSalary_ShouldRejectNegative() {
-        Employee e = createEmployee();
-
-        assertThrows(IllegalArgumentException.class, () -> e.setSalary(-1));
-    }
-
-    @Test
-    void getItemsSold_ShouldReturnCorrectValue() {
-        Employee e = createEmployee();
-
+    void constructor_ShouldSetItemsSold() {
+        Employee e = createEmployee("Bob", 500.0);
         assertEquals(5, e.getItemsSold());
     }
 
     @Test
+    void constructor_ShouldAddToExtent() {
+        Employee e = createEmployee("Bob", 500.0);
+        assertTrue(Employee.getExtent().contains(e));
+    }
+
+    @Test
+    void setSalary_ShouldUpdateValue() {
+        Employee e = createEmployee("Bob", 500.0);
+        e.setSalary(600.0);
+        assertEquals(600.0, e.getSalary());
+    }
+
+    @Test
+    void setSalary_ShouldRejectNegative() {
+        Employee e = createEmployee("Bob", 500.0);
+        assertThrows(IllegalArgumentException.class, () -> e.setSalary(-1));
+    }
+
+    @Test
     void setItemsSold_ShouldUpdateValue() {
-        Employee e = createEmployee();
-
+        Employee e = createEmployee("Bob", 500.0);
         e.setItemsSold(10);
-
         assertEquals(10, e.getItemsSold());
     }
 
     @Test
-    void assignManager_ShouldSetManagerFieldOnSubordinate() {
-        Employee manager = createEmployee();
-        Employee subordinate = createEmployee();
-
-        subordinate.assignManager(manager);
-
-        assertEquals(manager, subordinate.getManager());
+    void setItemsSold_ShouldRejectNegative() {
+        Employee e = createEmployee("Bob", 500.0);
+        assertThrows(IllegalArgumentException.class, () -> e.setItemsSold(-5));
     }
 
     @Test
-    void assignManager_ShouldAddSubordinateToManagerSet() {
-        Employee manager = createEmployee();
-        Employee subordinate = createEmployee();
-
-        subordinate.assignManager(manager);
-
-        assertTrue(manager.getSubordinates().contains(subordinate));
+    void getSubordinates_ShouldBeNullInitially() {
+        Employee e = createEmployee("Bob", 500.0);
+        assertNull(e.getSubordinates());
     }
 
     @Test
-    void assignManager_ShouldRemoveSubordinateFromOldManager() {
-        Employee oldManager = createEmployee();
-        Employee newManager = createEmployee();
-        Employee subordinate = createEmployee();
-        subordinate.assignManager(oldManager);
+    void assignManager_ShouldSetManagerField() {
+        Employee manager = createEmployee("Alice", 1000.0);
+        Employee worker = createEmployee("Bob", 500.0);
 
-        subordinate.assignManager(newManager);
+        worker.assignManager(manager);
 
-        assertFalse(oldManager.getSubordinates().contains(subordinate));
+        assertEquals(manager, worker.getManager());
     }
 
     @Test
-    void assignManager_ShouldRejectSelfAssignment() {
-        Employee e = createEmployee();
+    void assignManager_ShouldAddSubordinateToManagerList() {
+        Employee manager = createEmployee("Alice", 1000.0);
+        Employee worker = createEmployee("Bob", 500.0);
 
+        worker.assignManager(manager);
+
+        assertTrue(manager.getSubordinates().contains(worker));
+    }
+
+    @Test
+    void assignManager_ShouldPreventSelfAssignment() {
+        Employee e = createEmployee("Bob", 500.0);
+        e.assignManager(e);
         assertThrows(IllegalArgumentException.class, () -> e.assignManager(e));
     }
 
     @Test
-    void addSubordinate_ShouldSetManagerOnSubordinate() {
-        Employee manager = createEmployee();
-        Employee subordinate = createEmployee();
+    void assignManager_Change_ShouldUpdateManagerField() {
+        Employee manager1 = createEmployee("Alice", 1000.0);
+        Employee manager2 = createEmployee("Carol", 1100.0);
+        Employee worker = createEmployee("Bob", 500.0);
 
-        manager.addSubordinate(subordinate);
+        worker.assignManager(manager1);
+        worker.assignManager(manager2);
 
-        assertEquals(manager, subordinate.getManager());
+        assertEquals(manager2, worker.getManager());
     }
 
     @Test
-    void addSubordinate_ShouldUpdateManagerSubordinateList() {
-        Employee manager = createEmployee();
-        Employee subordinate = createEmployee();
+    void assignManager_Change_ShouldRemoveFromOldManager() {
+        Employee manager1 = createEmployee("Alice", 1000.0);
+        Employee manager2 = createEmployee("Carol", 1100.0);
+        Employee worker = createEmployee("Bob", 500.0);
 
-        manager.addSubordinate(subordinate);
+        worker.assignManager(manager1);
+        worker.assignManager(manager2);
 
-        assertTrue(manager.getSubordinates().contains(subordinate));
+        assertFalse(manager1.getSubordinates().contains(worker));
+    }
+
+    @Test
+    void assignManager_Change_ShouldAddToNewManager() {
+        Employee manager1 = createEmployee("Alice", 1000.0);
+        Employee manager2 = createEmployee("Carol", 1100.0);
+        Employee worker = createEmployee("Bob", 500.0);
+
+        worker.assignManager(manager1);
+        worker.assignManager(manager2);
+
+        assertTrue(manager2.getSubordinates().contains(worker));
+    }
+
+    @Test
+    void addSubordinate_ShouldSetManagerFieldOnWorker() {
+        Employee manager = createEmployee("Alice", 1000.0);
+        Employee worker = createEmployee("Bob", 500.0);
+
+        manager.addSubordinate(worker);
+
+        assertEquals(manager, worker.getManager());
+    }
+
+    @Test
+    void addSubordinate_ShouldAddWorkerToManagerList() {
+        Employee manager = createEmployee("Alice", 1000.0);
+        Employee worker = createEmployee("Bob", 500.0);
+
+        manager.addSubordinate(worker);
+
+        assertTrue(manager.getSubordinates().contains(worker));
     }
 
     @Test
     void addSubordinate_ShouldRejectNull() {
-        Employee manager = createEmployee();
-
+        Employee manager = createEmployee("Alice", 1000.0);
         assertThrows(IllegalArgumentException.class, () -> manager.addSubordinate(null));
     }
 
-
     @Test
-    void contractAssociation_ShouldRejectSecondContractForEmployee() {
-        Employee e = createEmployee();
-        // First contract (implicit association via Contract constructor)
-        new Contract(ContractType.EMPLOYMENT, LocalDate.now(), e);
-
-        // Trying to create a second contract for the same employee should trigger the "Employee can have only one contract" check
-        assertThrows(IllegalArgumentException.class, () ->
-                new Contract(ContractType.COMMISSION, LocalDate.now(), e)
-        );
+    void addSubordinate_ShouldRejectSelf() {
+        Employee manager = createEmployee("Alice", 1000.0);
+        assertThrows(IllegalArgumentException.class, () -> manager.addSubordinate(manager));
     }
 
     @Test
-    void deleteEmployee_ShouldRemoveAssociatedContractFromExtent() {
-        Employee e = createEmployee();
-        Contract c = new Contract(ContractType.EMPLOYMENT, LocalDate.now(), e);
+    void removeSubordinate_ShouldRemoveFromSubordinatesList() {
+        Employee manager = createEmployee("Alice", 1000.0);
+        Employee worker = createEmployee("Bob", 500.0);
+        manager.addSubordinate(worker);
 
-        e.deleteEmployee();
+        manager.removeSubordinate(worker);
 
-        assertFalse(Contract.getExtent().contains(c));
+        assertFalse(manager.getSubordinates().contains(worker));
     }
 
     @Test
-    void extent_ShouldReturnCopyAndNotReference() {
-        createEmployee();
+    void removeSubordinate_ShouldSetManagerToNull() {
+        Employee manager = createEmployee("Alice", 1000.0);
+        Employee worker = createEmployee("Bob", 500.0);
+        manager.addSubordinate(worker);
 
-        List<Employee> firstCall = Employee.getExtent();
-        List<Employee> secondCall = Employee.getExtent();
+        manager.removeSubordinate(worker);
 
-        assertNotSame(firstCall, secondCall);
+        assertNull(worker.getManager());
     }
 }

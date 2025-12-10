@@ -1,5 +1,9 @@
 package test.PersistenceModels;
 
+import main.Enums.DeliveryType;
+import main.Enums.OrderStatus;
+import main.MembershipTiers.Premium;
+import main.PersistenceModels.*;
 import main.Clothing.Item;
 import main.Enums.ClothingSize;
 import main.Enums.DeliveryType;
@@ -7,10 +11,8 @@ import main.Enums.OrderStatus;
 import main.MembershipTiers.Basic;
 import main.MembershipTiers.Premium;
 import main.Order.ItemQuantityInOrder;
-import main.PersistenceModels.Customer;
-import main.PersistenceModels.DebitCard;
-import main.PersistenceModels.Hoodie; // Assuming Hoodie exists from previous context
-import main.PersistenceModels.Order;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -21,103 +23,151 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTest {
 
-    private Customer createCustomerWithMembership() {
-        Customer c = new Customer("John", List.of("Addr"), "Doe", "mail", LocalDate.of(1990, 1, 1),
-                "acc", LocalDate.now(), 0, new DebitCard("123", LocalDate.now(), "999"));
-
-        c.purchaseMembership(LocalDate.now().plusDays(1), new Basic());
-        return c;
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
     }
 
-
-    private Customer createPremiumCustomer() {
-        Customer c = new Customer("Jane", List.of("Addr"), "Doe", "mail", LocalDate.of(1990, 1, 1),
-                "acc", LocalDate.now(), 0, new DebitCard("123", LocalDate.now(), "999"));
-        c.purchaseMembership(LocalDate.now().plusDays(10), new Premium()); // Active premium
-        return c;
-    }
-
-    private Item createItem(String name, double price) {
+    private Hoodie createHoodie(String name, double price) {
         return new Hoodie(name, "Brand", price, 5, List.of("Cotton"), List.of("Black"), ClothingSize.M, true);
     }
 
+    private ItemQuantityInOrder createItemQuantity(double price, int quantity, Order order) {
+        return new ItemQuantityInOrder(createHoodie("TestHoodie", price), quantity, order);
+    }
 
-    @Test
-    void itemQuantityConstructor_ShouldAddSelfToOrderList() {
-        Customer c = createCustomerWithMembership();
-        Order order = new Order(c, DeliveryType.STORE_PICKUP, LocalDateTime.now(), OrderStatus.ACCEPTED);
-        Item item = createItem("Shirt", 50);
+    private Customer createCustomer() {
+        DebitCard card = new DebitCard("1111-2222-3333-4444", LocalDate.now().plusYears(1), "123");
+        return new Customer(
+                "John", List.of("Address"), "Doe", "mail@mail.com", LocalDate.of(1990, 1, 1),
+                "user1", LocalDate.now(), 0, card
+        );
+    }
 
-        new ItemQuantityInOrder(item, 1, order);
-
-        assertEquals(1, order.getItems().size());
+    private Order createOrder(DeliveryType deliveryType) {
+        return new Order(deliveryType, LocalDateTime.now(), OrderStatus.ACCEPTED);
     }
 
     @Test
-    void getItems_ShouldReturnCorrectBagContents() {
-        Customer c = createCustomerWithMembership();
-        Order order = new Order(c, DeliveryType.STORE_PICKUP, LocalDateTime.now(), OrderStatus.ACCEPTED);
-        Item item = createItem("Shirt", 50);
-        ItemQuantityInOrder bagEntry = new ItemQuantityInOrder(item, 1, order);
-
-        List<ItemQuantityInOrder> items = order.getItems();
-
-        assertTrue(items.contains(bagEntry));
+    void constructor_ShouldSetDeliveryType() {
+        Order o = new Order(DeliveryType.HOME_DELIVERY, LocalDateTime.now(), OrderStatus.ACCEPTED);
+        assertEquals(DeliveryType.HOME_DELIVERY, o.getDeliveryType());
     }
 
     @Test
-    void addItem_ShouldRejectDuplicateBagEntry() {
-        Customer c = createCustomerWithMembership();
-        Order order = new Order(c, DeliveryType.STORE_PICKUP, LocalDateTime.now(), OrderStatus.ACCEPTED);
-        Item item = createItem("Shirt", 50);
-        ItemQuantityInOrder bagEntry = new ItemQuantityInOrder(item, 1, order);
+    void constructor_ShouldSetTimestamp() {
+        LocalDateTime now = LocalDateTime.now();
+        Order o = new Order(DeliveryType.STORE_PICKUP, now, OrderStatus.ACCEPTED);
+        assertEquals(now, o.getTimestamp());
+    }
 
-        assertThrows(IllegalArgumentException.class, () -> order.addItem(bagEntry));
+    @Test
+    void constructor_ShouldSetStatus() {
+        Order o = new Order(DeliveryType.STORE_PICKUP, LocalDateTime.now(), OrderStatus.PROCESSING);
+        assertEquals(OrderStatus.PROCESSING, o.getStatus());
+    }
+
+    @Test
+    void constructor_ShouldAddToExtent() {
+        Order o = createOrder(DeliveryType.STORE_PICKUP);
+        assertTrue(Order.getExtent().contains(o));
+    }
+
+    @Test
+    void constructor_ShouldRejectNullDeliveryType() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Order(null, LocalDateTime.now(), OrderStatus.ACCEPTED));
+    }
+
+    @Test
+    void constructor_ShouldRejectNullStatus() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Order(DeliveryType.STORE_PICKUP, LocalDateTime.now(), null));
+    }
+
+    @Test
+    void constructor_ShouldRejectFutureTimestamp() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Order(DeliveryType.STORE_PICKUP, LocalDateTime.now().plusDays(1), OrderStatus.ACCEPTED));
     }
 
 
     @Test
-    void getSumPrice_ShouldCalculateTotalBasedOnBag() {
-        Customer c = createCustomerWithMembership();
-        Order order = new Order(c, DeliveryType.STORE_PICKUP, LocalDateTime.now(), OrderStatus.ACCEPTED);
+    void newItemQuantity_ShouldAutomaticallyAddToOrderList() {
+        Order o = createOrder(DeliveryType.STORE_PICKUP);
 
-        Item item1 = createItem("Item1", 100.0);
-        Item item2 = createItem("Item2", 50.0);
+        ItemQuantityInOrder item = createItemQuantity(100, 1, o);
 
-        new ItemQuantityInOrder(item1, 2, order);
-        new ItemQuantityInOrder(item2, 1, order);
-
-        double sum = order.getSumPrice();
-
-        assertEquals(250.0, sum);
+        assertTrue(o.getItemListAssociation().contains(item));
     }
 
     @Test
-    void getFinalPrice_ShouldApplyMembershipDiscount() {
-        Customer c = createPremiumCustomer();
-        Order order = new Order(c, DeliveryType.STORE_PICKUP, LocalDateTime.now(), OrderStatus.ACCEPTED);
-        Item item = createItem("Item1", 100.0);
-        new ItemQuantityInOrder(item, 1, order);
+    void addItemToList_ShouldRejectDuplicateItemObject() {
+        Order o = createOrder(DeliveryType.STORE_PICKUP);
 
-        double discountPercent = c.getMembershipTier().getDiscount();
-        double expectedPrice = 100.0 * (100 - discountPercent) / 100.0;
+        ItemQuantityInOrder item = createItemQuantity(100, 1, o);
 
-        double finalPrice = order.getFinalPrice();
-
-        assertEquals(expectedPrice, finalPrice);
+        assertThrows(IllegalArgumentException.class, () -> o.addItemToList(item));
     }
 
     @Test
-    void getFinalPrice_ShouldAddDeliveryFeeForHomeDelivery() {
-        Customer c = createCustomerWithMembership();
-        Order order = new Order(c, DeliveryType.HOME_DELIVERY, LocalDateTime.now(), OrderStatus.ACCEPTED);
-        Item item = createItem("Item1", 100.0);
-        new ItemQuantityInOrder(item, 1, order);
+    void removeItemFromList_ShouldRemoveItem() {
+        Order o = createOrder(DeliveryType.STORE_PICKUP);
+        ItemQuantityInOrder item = createItemQuantity(100, 1, o);
 
-        double expected = 105.0;
+        o.removeItemFromList(item);
 
-        double finalPrice = order.getFinalPrice();
+        assertFalse(o.getItemListAssociation().contains(item));
+    }
 
-        assertEquals(expected, finalPrice);
+
+    @Test
+    void getSumPrice_ShouldCalculateTotalCorrectly() {
+        Order o = createOrder(DeliveryType.STORE_PICKUP);
+
+        createItemQuantity(100, 2, o); // 200
+        createItemQuantity(50, 1, o);  // 50
+
+        assertEquals(250.0, o.getSumPrice());
+    }
+
+    @Test
+    void getFinalPrice_ShouldAddDeliveryFee_WhenHomeDelivery() {
+        Order o = createOrder(DeliveryType.HOME_DELIVERY); // +5 fee
+
+        createItemQuantity(100, 1, o);
+
+        assertEquals(105.0, o.getFinalPrice());
+    }
+
+    @Test
+    void getFinalPrice_ShouldNotAddFee_WhenSTORE_PICKUP() {
+        Order o = createOrder(DeliveryType.STORE_PICKUP);
+
+        createItemQuantity(100, 1, o);
+
+        assertEquals(100.0, o.getFinalPrice());
+    }
+
+
+    @Test
+    void isDiscountApplied_ShouldSetFalse_WhenNoMembershipEndDatesSet() {
+        Customer c = createCustomer();
+        Order o = createOrder(DeliveryType.STORE_PICKUP);
+        c.addOrder(o);
+
+        c.purchaseMembership(LocalDate.now().plusYears(1), new Premium());
+
+        o.isDiscountApplied();
+
+        createItemQuantity(100, 1, o);
+
+        assertTrue(o.getFinalPrice() < 100.0);
+    }
+
+    @Test
+    void isDiscountApplied_ShouldThrowException_IfCustomerIsNull() {
+        Order o = createOrder(DeliveryType.STORE_PICKUP);
+        assertThrows(IllegalArgumentException.class, o::isDiscountApplied);
     }
 }

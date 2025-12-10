@@ -2,7 +2,9 @@ package test.PersistenceModels;
 
 import main.Enums.ClothingSize;
 import main.PersistenceModels.HeeledShoe;
+import main.PersistenceModels.PersistenceUtil;
 import main.PersistenceModels.Trousers;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +14,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrousersTest {
+
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
+
     @Test
     void constructor_shouldThrowException_whenWaistLengthNotPositive() {
         Exception exception = assertThrows(IllegalArgumentException.class, () ->

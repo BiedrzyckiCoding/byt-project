@@ -1,10 +1,8 @@
 package test.PersistenceModels;
 
 import main.PersistenceModels.Boot;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import main.PersistenceModels.PersistenceUtil;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +10,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BootTest {
+
+    @BeforeEach
+    void setUp() {
+        PersistenceUtil.loadAll();
+    }
 
     @Test
     void constructor_shouldThrowException_whenPriceBelowMinimum() {
