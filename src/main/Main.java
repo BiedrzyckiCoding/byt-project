@@ -18,7 +18,7 @@ public class Main {
 
         PersistenceUtil.loadAll();
 
-        printExtentSizes();
+        /*printExtentSizes();
 
         Hoodie anyHoodie = Hoodie.getExtent().isEmpty() ? null : Hoodie.getExtent().getFirst();
         if (anyHoodie != null) {
@@ -28,9 +28,9 @@ public class Main {
         if (anyHoodie2 != null) {
             System.out.println("Example hoodie after load: " + anyHoodie2.getName() + " - " + anyHoodie2.getBrand() + " - " + anyHoodie2.getPrice() + " - " + anyHoodie2.getMaterial());
         }
-    }
+    }*/
 
-    private static void createSampleData() {
+//    private static void createSampleData() {
 
 
 
@@ -207,7 +207,7 @@ public class Main {
         );*/
     }
 
-    private static void printExtentSizes() {
+    /*private static void printExtentSizes() {
         System.out.println("Hoodies:        " + Hoodie.getExtent().size());
         System.out.println("Shirts:         " + Shirt.getExtent().size());
         System.out.println("Trousers:       " + Trousers.getExtent().size());
@@ -220,5 +220,5 @@ public class Main {
         System.out.println("Customers:      " + Customer.getExtent().size());
         System.out.println("Orders:         " + Order.getExtent().size());
         System.out.println();
-    }
+    }*/
 }

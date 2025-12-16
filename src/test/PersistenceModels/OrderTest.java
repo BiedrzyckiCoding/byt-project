@@ -2,9 +2,7 @@ package test.PersistenceModels;
 
 import main.Enums.DeliveryType;
 import main.Enums.OrderStatus;
-import main.MembershipTiers.Premium;
 import main.PersistenceModels.*;
-import main.Clothing.Item;
 import main.Enums.ClothingSize;
 import main.Order.ItemQuantityInOrder;
 import org.junit.jupiter.api.BeforeAll;

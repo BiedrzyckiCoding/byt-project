@@ -4,12 +4,10 @@ import main.Enums.ClothingSize;
 import main.Enums.Fit;
 import main.Enums.SleeveLength;
 import main.PersistenceModels.PersistenceUtil;
-import main.PersistenceModels.Shirt;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

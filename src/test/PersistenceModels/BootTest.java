@@ -1,10 +1,8 @@
 package test.PersistenceModels;
 
-import main.PersistenceModels.Boot;
 import main.PersistenceModels.PersistenceUtil;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

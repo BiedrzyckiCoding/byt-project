@@ -1,11 +1,6 @@
 package test.Utils;
 
-import main.Editions.LimitedEdition;
 import main.Enums.ClothingSize;
-import main.Footwear.Footwear;
-import main.PersistenceModels.Boot;
-import main.PersistenceModels.DebitCard;
-import main.PersistenceModels.Hoodie;
 import main.PersistenceModels.PersistenceUtil;
 import org.junit.jupiter.api.*;
 

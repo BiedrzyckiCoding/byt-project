@@ -1,16 +1,14 @@
 package main.PersistenceModels;
 
+
 import java.io.Serializable;
 import java.util.List;
 
 class AppState implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    List<Hoodie> hoodies;
-    List<Shirt> shirts;
-    List<Trousers> trousers;
-    List<Boot> boots;
-    List<HeeledShoe> heeledShoes;
+    List<ClothingItem> clothingItems;
+    List<Footwear> footwearItems;
     List<MembershipCard> membershipCards;
     List<Order> orders;
     List<Contract> contracts;
@@ -20,11 +18,8 @@ class AppState implements Serializable {
 
     static AppState fromStatics() {
         AppState s = new AppState();
-        s.hoodies = Hoodie.getExtent();
-        s.shirts = Shirt.getExtent();
-        s.trousers = Trousers.getExtent();
-        s.boots = Boot.getExtent();
-        s.heeledShoes = HeeledShoe.getExtent();
+        s.clothingItems = ClothingItem.getExtent();
+        s.footwearItems = Footwear.getExtent();
         s.membershipCards = MembershipCard.getExtent();
         s.orders = Order.getExtent();
         s.contracts = Contract.getExtent();
@@ -35,11 +30,8 @@ class AppState implements Serializable {
     }
 
     void applyToStatics() {
-        Hoodie.setExtent(hoodies);
-        Shirt.setExtent(shirts);
-        Trousers.setExtent(trousers);
-        Boot.setExtent(boots);
-        HeeledShoe.setExtent(heeledShoes);
+        ClothingItem.setExtent(clothingItems);
+        Footwear.setExtent(footwearItems);
         MembershipCard.setExtent(membershipCards);
         Order.setExtent(orders);
         Contract.setExtent(contracts);
