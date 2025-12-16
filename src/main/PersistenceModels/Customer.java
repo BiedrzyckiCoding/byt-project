@@ -1,15 +1,17 @@
 package main.PersistenceModels;
 
+import main.Interfaces.ICustomer;
 import main.MembershipTiers.MembershipTier;
 import main.Person.Person;
 import main.Utils.ValidationUtil;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Customer extends Person {
+public class Customer implements ICustomer, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,13 +22,12 @@ public class Customer extends Person {
     private LocalDate accountCreatedDate;
     private double totalSpent;
     private DebitCard debitCard;
+    private Person person;
 
     private HashMap<LocalDateTime, Order> ordersByTimestamp = new HashMap<>();
     private ArrayList<MembershipCard> membershipCards = new ArrayList<>();
 
-    public Customer(String name, List<String> address, String surname, String email, LocalDate birthDate,
-                    String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard) {
-        super(name, address, surname, email, birthDate);
+    public Customer(String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard, Person person) {
 
         ValidationUtil.notEmptyString(accountName, "accountName");
         ValidationUtil.notFuture(accountCreatedDate, "accountCreatedDate");
@@ -37,54 +38,66 @@ public class Customer extends Person {
         this.accountCreatedDate = accountCreatedDate;
         this.totalSpent = totalSpent;
         this.debitCard = debitCard;
+        this.person = person;
 
         addToExtent(this);
     }
 
+    @Override
     public String getAccountName() {
         return accountName;
     }
 
+    @Override
     public void setAccountName(String accountName) {
         ValidationUtil.notEmptyString(accountName, "accountName");
         this.accountName = accountName;
     }
 
+    @Override
     public LocalDate getAccountCreatedDate() {
         return accountCreatedDate;
     }
 
+    @Override
     public void setAccountCreatedDate(LocalDate accountCreatedDate) {
         ValidationUtil.notFuture(accountCreatedDate, "accountCreatedDate");
         this.accountCreatedDate = accountCreatedDate;
     }
 
+    @Override
     public double getTotalSpent() {
         return totalSpent;
     }
 
+    @Override
     public void setTotalSpent(double totalSpent) {
         ValidationUtil.nonNegative(totalSpent, "totalSpent");
         this.totalSpent = totalSpent;
     }
 
+    @Override
     public DebitCard getDebitCard() {
         return debitCard;
     }
 
+    @Override
     public void setDebitCard(DebitCard debitCard) {
         ValidationUtil.notNull(debitCard, "debitCard");
         this.debitCard = debitCard;
     }
 
+    @Override
     public MembershipCard getMembershipCard() {
         return membershipCards.getLast();
     }
 
+    @Override
     public MembershipTier getMembershipTier() {
         return membershipCards.getLast().getMembershipTier();
     }
 
+    @Override
     public void addMembershipTierToCustomer(MembershipCard membershipCard) {
         if (membershipCards.contains(membershipCard)) {
             throw new IllegalArgumentException("Membership Card already exists for this customer");
@@ -92,10 +105,12 @@ public class Customer extends Person {
             membershipCards.add(membershipCard);
     }
 
+    @Override
     public ArrayList<MembershipCard> getMembershipTiers() {
         return new ArrayList<>(membershipCards);
     }
 
+    @Override
     public void changeMembershipTier(MembershipTier newMembershipTier) {
         if (isSameMembershipTier(newMembershipTier)) {
             throw new IllegalArgumentException("Cannot change to same tier !");
@@ -103,14 +118,17 @@ public class Customer extends Person {
         this.membershipCards.getLast().setMembershipTier(newMembershipTier);
     }
 
+    @Override
     public void purchaseMembership(MembershipTier membershipTier) {
         MembershipCard membershipCard = new MembershipCard(LocalDate.now(), this, membershipTier);
     }
 
+    @Override
     public void purchaseMembership(LocalDate dateEnd, MembershipTier membershipTier) {
         MembershipCard membershipCard = new MembershipCard(LocalDate.now(), dateEnd, this, membershipTier);
     }
 
+    @Override
     public void addOrder(Order order) {
         LocalDateTime key = order.getTimestamp();
         if (ordersByTimestamp.containsKey(key)) {
@@ -121,11 +139,13 @@ public class Customer extends Person {
         order.addCustomer(this);
     }
 
+    @Override
     public void removeOrder(Order order) {
         ordersByTimestamp.remove(order.getTimestamp());
         order.removeCustomer();
     }
 
+    @Override
     public Order getOrderByTimestamp(LocalDateTime t) {
         return ordersByTimestamp.get(t);
     }
@@ -147,6 +167,7 @@ public class Customer extends Person {
         extent = new ArrayList<>(loaded);
     }
 
+    @Override
     public void updateAccountDetails() {
         /* TODO */
     }

@@ -1,15 +1,18 @@
 package main.PersistenceModels;
 
+import main.Interfaces.ICustomer;
+import main.Interfaces.IEmployee;
 import main.Person.Person;
 import main.Utils.ValidationUtil;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class Employee extends Person {
+public class Employee implements IEmployee, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -21,11 +24,10 @@ public class Employee extends Person {
     private Employee manager;
     private HashSet<Employee> subordinates;
     private HashSet<Contract> contracts;
+    private Person person;
 
 
-    public Employee(String name, List<String> address, String surname, String email,
-                    LocalDate birthDate, double salary, int itemsSold) {
-        super(name, address, surname, email, birthDate);
+    public Employee(double salary, int itemsSold, Person person) {
 
         ValidationUtil.nonNegative(salary, "salary");
         ValidationUtil.nonNegative(itemsSold, "itemsSold");
@@ -40,28 +42,34 @@ public class Employee extends Person {
         addToExtent(this);
     }
 
+    @Override
     public double getSalary() {
         return salary;
     }
 
+    @Override
     public void setSalary(double salary) {
         ValidationUtil.nonNegative(salary, "salary");
         this.salary = salary;
     }
 
+    @Override
     public int getItemsSold() {
         return itemsSold;
     }
 
+    @Override
     public void setItemsSold(int itemsSold) {
         ValidationUtil.nonNegative(itemsSold, "itemsSold");
         this.itemsSold = itemsSold;
     }
 
+    @Override
     public Employee getManager() {
         return manager;
     }
 
+    @Override
     public HashSet<Employee> getSubordinates() {
         return subordinates;
     }
@@ -96,7 +104,7 @@ public class Employee extends Person {
         }
     }
 
-
+    @Override
     public void deleteEmployee() {
         for(Contract contract : contracts) {
             contract.deleteContract();
@@ -104,6 +112,7 @@ public class Employee extends Person {
         extent.remove(this);
     }
 
+    @Override
     public void assignManager(Employee manager) {
         if (this.manager == manager){
             throw new IllegalArgumentException("Manager cannot be the same");
@@ -115,12 +124,14 @@ public class Employee extends Person {
         manager.addSubordinateInternal(this);
     }
 
+    @Override
     public void addSubordinate(Employee subordinate) {
         ValidationUtil.notNull(subordinate, "subordinate");
         if (this == subordinate) {throw new IllegalArgumentException("Employee cannot be cannot be its own subordinate");}
         subordinate.assignManager(this);
     }
 
+    @Override
     public void removeSubordinate(Employee subordinate) {
         ValidationUtil.notNull(subordinate, "subordinate");
         if(!this.subordinates.contains(subordinate)) {throw new IllegalArgumentException("This employee doesnt have a this subordinate");}
@@ -144,18 +155,22 @@ public class Employee extends Person {
         this.manager = manager;
     }
 
+    @Override
     public void addNewEmployee() {
         /* TODO */
     }
 
+    @Override
     public void checkEmployeeList() {
         /* TODO */
     }
 
+    @Override
     public void viewDashboard() {
         /* TODO */
     }
 
+    @Override
     public void checkFinancialReport() {
         /* TODO */
     }

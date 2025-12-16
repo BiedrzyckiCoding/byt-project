@@ -2,8 +2,6 @@ package test.PersistenceModels;
 
 import main.Enums.DeliveryType;
 import main.Enums.OrderStatus;
-import main.MembershipTiers.Basic;
-import main.MembershipTiers.Premium;
 import main.PersistenceModels.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

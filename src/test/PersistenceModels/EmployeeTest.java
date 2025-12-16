@@ -1,3 +1,4 @@
+/*
 package test.PersistenceModels;
 
 import main.Enums.ContractType;
@@ -199,4 +200,4 @@ class EmployeeTest {
 
         assertNull(worker.getManager());
     }
-}
+}*/

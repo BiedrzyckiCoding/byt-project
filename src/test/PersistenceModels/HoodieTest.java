@@ -1,7 +1,6 @@
 package test.PersistenceModels;
 
 import main.Enums.ClothingSize;
-import main.PersistenceModels.Hoodie;
 import main.PersistenceModels.PersistenceUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
