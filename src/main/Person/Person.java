@@ -1,17 +1,23 @@
 package main.Person;
 
+import main.PersistenceModels.Customer;
+import main.PersistenceModels.DebitCard;
+import main.PersistenceModels.Employee;
 import main.Utils.ValidationUtil;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public abstract class Person implements Serializable {
+public class Person implements Serializable {
     private String name;
     private List<String> address;
     private String surname;
     private String email;
     private LocalDate birthDate;
+
+    private Employee employee;
+    private Customer customer;
 
     public Person(String name, List<String> address, String surname, String email, LocalDate birthDate) {
         ValidationUtil.notEmptyString(name, "name");
@@ -74,5 +80,21 @@ public abstract class Person implements Serializable {
 
     public int getAge() {
         return LocalDate.now().getYear() - birthDate.getYear();
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(double salary, int itemsSold){
+        this.employee = new Employee(salary, itemsSold, this);
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String accountName, LocalDate accountCreatedDate, double totalSpent, DebitCard debitCard) {
+        this.customer = new Customer(accountName, accountCreatedDate, totalSpent, debitCard, this);
     }
 }
