@@ -63,11 +63,8 @@ public class PersistenceUtil {
     }
 
     private static void resetAllExtents() {
-        Hoodie.setExtent(List.of());
-        Shirt.setExtent(List.of());
-        Trousers.setExtent(List.of());
-        Boot.setExtent(List.of());
-        HeeledShoe.setExtent(List.of());
+        ClothingItem.setExtent(List.of());
+        Footwear.setExtent(List.of());
         MembershipCard.setExtent(List.of());
         Contract.setExtent(List.of());
         DebitCard.setExtent(List.of());

@@ -1,6 +1,5 @@
 package test.PersistenceModels;
 
-import main.MembershipTiers.Basic;
 import main.MembershipTiers.MembershipTier;
 import main.PersistenceModels.Customer;
 import main.PersistenceModels.DebitCard;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

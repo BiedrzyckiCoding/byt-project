@@ -4,10 +4,11 @@ import main.Order.ItemQuantityInOrder;
 import main.Utils.ValidationUtil;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Item implements Serializable {
+public abstract class Item implements Serializable {
     private String name;
     private String brand;
     private double price;
@@ -15,15 +16,18 @@ public class Item implements Serializable {
     private List<String> material;
     private List<String> color;
 
+    private final Edition edition;
+
     private List<ItemQuantityInOrder> itemListAssociation = new ArrayList<>();
 
-    public Item(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color) {
+    public Item(String name, String brand, double price, int stockQuantity, List<String> material, List<String> color, Edition edition) {
         ValidationUtil.notEmptyString(name, "name");
         ValidationUtil.notEmptyString(brand, "brand");
         ValidationUtil.nonNegative(price, "price");
         ValidationUtil.nonNegative(stockQuantity, "stockQuantity");
         ValidationUtil.nonEmptyList(material, "material");
         ValidationUtil.nonEmptyList(color, "color");
+        ValidationUtil.notNull(edition, "edition");
 
         this.name = name;
         this.brand = brand;
@@ -31,6 +35,7 @@ public class Item implements Serializable {
         this.stockQuantity = stockQuantity;
         this.material = material;
         this.color = color;
+        this.edition = edition;
     }
 
     public String getName() {
@@ -97,6 +102,42 @@ public class Item implements Serializable {
     public void removeItemFromList(ItemQuantityInOrder itemList) {
         itemListAssociation.remove(itemList);
     }
+
+    protected abstract void validateMinPrice();
+
+    public interface Edition extends Serializable { }
+
+    public static final class LimitedEditionInfo implements Edition {
+        private final LocalDate releaseDate;
+        private final int totalProduced;
+
+        public LimitedEditionInfo(LocalDate releaseDate, int totalProduced) {
+            ValidationUtil.notFuture(releaseDate, "releaseDate");
+            ValidationUtil.positive(totalProduced, "totalProduced");
+            this.releaseDate = releaseDate;
+            this.totalProduced = totalProduced;
+        }
+
+        public LocalDate getReleaseDate() { return releaseDate; }
+        public int getTotalProduced() { return totalProduced; }
+    }
+
+    public static final class StandardEditionInfo implements Edition {
+        private final LocalDate productionStartDate;
+        private final String season;
+
+        public StandardEditionInfo(LocalDate productionStartDate, String season) {
+            ValidationUtil.notFuture(productionStartDate, "productionStartDate");
+            ValidationUtil.notEmptyString(season, "season");
+            this.productionStartDate = productionStartDate;
+            this.season = season;
+        }
+
+        public LocalDate getProductionStartDate() { return productionStartDate; }
+        public String getSeason() { return season; }
+    }
+
+
 
     public void addItemToOrder() {
         /* TODO */ }

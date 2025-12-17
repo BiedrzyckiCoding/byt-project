@@ -1,20 +1,20 @@
 package main.PersistenceModels;
 
-import main.Person.Person;
 import main.Utils.ValidationUtil;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class Employee extends Person {
+public class Employee implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static List<Employee> extent = new ArrayList<>();
+    private final Person owner;
 
     private double salary;
     private int itemsSold;
@@ -23,21 +23,46 @@ public class Employee extends Person {
     private HashSet<Contract> contracts;
 
 
-    public Employee(String name, List<String> address, String surname, String email,
-                    LocalDate birthDate, double salary, int itemsSold) {
-        super(name, address, surname, email, birthDate);
+    public static final class EmployeeData implements Serializable {
+        public final double salary;
+        public final int itemsSold;
 
-        ValidationUtil.nonNegative(salary, "salary");
-        ValidationUtil.nonNegative(itemsSold, "itemsSold");
+        public EmployeeData(double salary, int itemsSold) {
+            this.salary = salary;
+            this.itemsSold = itemsSold;
+        }
+    }
 
-        this.salary = salary;
-        this.itemsSold = itemsSold;
-        this.manager = null;
-        this.subordinates = null;
-        this.contracts = null;
+    Employee(Person owner, EmployeeData data) {
+        ValidationUtil.notNull(owner, "owner");
+        ValidationUtil.notNull(data, "data");
+        ValidationUtil.nonNegative(data.salary, "salary");
+        ValidationUtil.nonNegative(data.itemsSold, "itemsSold");
 
+        this.owner = owner;
+        this.salary = data.salary;
+        this.itemsSold = data.itemsSold;
+    }
 
-        addToExtent(this);
+    public Person getOwner() { return owner; }
+
+    void onDetach() {
+        if (manager != null) {
+            manager.removeSubordinateInternal(this);
+            manager = null;
+        }
+        if (subordinates != null) {
+            for (Employee subordinates : new HashSet<>(subordinates)) {
+                subordinates.setManagerInternal(null);
+            }
+            subordinates.clear();
+        }
+        if (contracts != null) {
+            for (Contract c : new HashSet<>(contracts)) {
+                c.deleteContract();
+            }
+            contracts.clear();
+        }
     }
 
     public double getSalary() {
@@ -63,21 +88,9 @@ public class Employee extends Person {
     }
 
     public HashSet<Employee> getSubordinates() {
-        return subordinates;
+        return new HashSet<>(subordinates);
     }
 
-    private static void addToExtent(Employee e) {
-        if (e == null) throw new IllegalArgumentException("Employee cannot be null");
-        extent.add(e);
-    }
-
-    public static List<Employee> getExtent() {
-        return new ArrayList<>(extent);
-    }
-
-    static void setExtent(List<Employee> loaded) {
-        extent = new ArrayList<>(loaded);
-    }
 
     void addContract(Contract contract) {
         ValidationUtil.notNull(contract, "contract");
@@ -101,7 +114,6 @@ public class Employee extends Person {
         for(Contract contract : contracts) {
             contract.deleteContract();
         }
-        extent.remove(this);
     }
 
     public void assignManager(Employee manager) {
