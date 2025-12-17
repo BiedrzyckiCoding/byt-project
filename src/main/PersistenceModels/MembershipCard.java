@@ -20,30 +20,32 @@ public class MembershipCard implements Serializable {
     private LocalDate dateStart;
     private LocalDate dateEnd;
 
-    private Customer customer;
-
-
+    private Person customer;
     private MembershipTier membershipTier;
 
-    public MembershipCard(LocalDate dateStart, LocalDate dateEnd, Customer customer, MembershipTier membershipTier) {
+    public MembershipCard(LocalDate dateStart, LocalDate dateEnd, Person person, MembershipTier membershipTier) {
         ValidationUtil.notNull(dateStart, "dateStart");
         ValidationUtil.notNull(dateEnd, "dateEnd");
         ValidationUtil.notFuture(dateStart, "dateStart");
         ValidationUtil.dateOrder(dateStart, dateEnd);
 
+        if (!person.isCustomer()) {
+            throw new IllegalArgumentException("Only a Person with Customer role can own a MembershipCard");
+        }
+
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
-        this.customer = customer;
+        this.customer = person;
         this.membershipTier = membershipTier;
 
-        customer.addMembershipTierToCustomer(this);
+        person.asCustomer().addMembershipTierToCustomer(this);
         membershipTier.addMembershipCard(this);
 
         addToExtent(this);
     }
 
-    public MembershipCard(LocalDate dateStart,Customer customer, MembershipTier membershipTier) {
-        this(dateStart,null,customer,membershipTier);
+    public MembershipCard(LocalDate dateStart, Person customer, MembershipTier membershipTier) {
+        this(dateStart, null, customer, membershipTier);
     }
 
     public void setDates(LocalDate dateStart, LocalDate dateEnd) {
@@ -54,7 +56,7 @@ public class MembershipCard implements Serializable {
         this.dateEnd = dateEnd;
     }
 
-    public Customer getCustomer() {
+    public Person getPerson() {
         return customer;
     }
 
