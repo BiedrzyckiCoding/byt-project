@@ -12,9 +12,8 @@ class AppState implements Serializable {
     List<MembershipCard> membershipCards;
     List<Order> orders;
     List<Contract> contracts;
-    List<Customer> customers;
     List<DebitCard> debitCards;
-    List<Employee> employees;
+    List<Person> people;
 
     static AppState fromStatics() {
         AppState s = new AppState();
@@ -23,9 +22,8 @@ class AppState implements Serializable {
         s.membershipCards = MembershipCard.getExtent();
         s.orders = Order.getExtent();
         s.contracts = Contract.getExtent();
-        s.customers = Customer.getExtent();
         s.debitCards = DebitCard.getExtent();
-        s.employees = Employee.getExtent();
+        s.people = Person.getExtent();
         return s;
     }
 
@@ -35,8 +33,7 @@ class AppState implements Serializable {
         MembershipCard.setExtent(membershipCards);
         Order.setExtent(orders);
         Contract.setExtent(contracts);
-        Customer.setExtent(customers);
+        Person.setExtent(people);
         DebitCard.setExtent(debitCards);
-        Employee.setExtent(employees);
     }
 }

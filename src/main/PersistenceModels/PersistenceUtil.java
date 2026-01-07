@@ -68,8 +68,7 @@ public class PersistenceUtil {
         MembershipCard.setExtent(List.of());
         Contract.setExtent(List.of());
         DebitCard.setExtent(List.of());
-        Employee.setExtent(List.of());
-        Customer.setExtent(List.of());
+        Person.setExtent(List.of());
         Order.setExtent(List.of());
     }
 }
