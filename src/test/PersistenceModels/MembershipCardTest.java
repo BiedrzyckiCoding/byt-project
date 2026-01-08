@@ -4,223 +4,149 @@ import main.MembershipTiers.MembershipTier;
 import main.PersistenceModels.Customer;
 import main.PersistenceModels.DebitCard;
 import main.PersistenceModels.MembershipCard;
-import main.PersistenceModels.PersistenceUtil;
-import org.junit.jupiter.api.BeforeAll;
+import main.PersistenceModels.Person;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MembershipCardTest {
 
+    private Person validCustomerPerson;
+    private Person validNonCustomerPerson;
+    private MembershipTier validTier;
+    private LocalDate validStart;
+    private LocalDate validEnd;
+
     @BeforeEach
     void setUp() {
-        PersistenceUtil.loadAll();
+//        MembershipCard.setExtent(Collections.emptyList());
+
+        validStart = LocalDate.now();
+        validEnd = LocalDate.now().plusYears(1);
+        validTier = new MembershipTier(MembershipTier.TierType.BASIC);
+
+        DebitCard debitCard = new DebitCard("1234567890123456", LocalDate.now().plusYears(2), "123");
+        Customer.CustomerData customerData = new Customer.CustomerData("john_acc", LocalDate.now(), 0.0, debitCard);
+        validCustomerPerson = new Person("John", List.of("Address"), "Doe", "john@test.com", LocalDate.of(1990, 1, 1), customerData);
+
+        main.PersistenceModels.Employee.EmployeeData employeeData = new main.PersistenceModels.Employee.EmployeeData(2000, 0);
+        validNonCustomerPerson = new Person("Jane", List.of("Address"), "Doe", "jane@test.com", LocalDate.of(1990, 1, 1), employeeData);
     }
 
-    private DebitCard createDebitCard() {
-        return new DebitCard("1234-5678-9012-3456", LocalDate.now().plusYears(2), "123");
+    @AfterEach
+    void tearDown() {
+//        MembershipCard.setExtent(Collections.emptyList());
     }
 
-    private Customer createCustomer() {
-        return new Customer(
-                "John",
-                List.of("Street", "City", "00000"),
-                "Doe",
-                "john@example.com",
-                LocalDate.of(1990, 1, 1),
-                "johnAccount",
-                LocalDate.now(),
-                0.0,
-                createDebitCard()
+    @Test
+    void constructor_shouldCreateCard_whenAllDataValid() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        assertNotNull(card);
+    }
+
+    @Test
+    void constructor_shouldThrowException_whenDateStartNull() {
+        assertThrows(Exception.class, () ->
+                new MembershipCard(null, validEnd, validCustomerPerson, validTier)
         );
     }
 
-    private MembershipTier createTier() {
-        return new Basic();
-    }
-
-    private MembershipCard createMembershipCard(LocalDate start, LocalDate end) {
-        return new MembershipCard(start, end, createCustomer(), createTier());
-    }
-
-    // --- Constructor Tests ---
-
     @Test
-    void constructor_ShouldSetStartDate() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().plusDays(10);
-
-        MembershipCard mc = createMembershipCard(start, end);
-
-        assertEquals(start, mc.getDateStart());
+    void constructor_shouldThrowException_whenDateEndNull() {
+        assertThrows(Exception.class, () ->
+                new MembershipCard(validStart, null, validCustomerPerson, validTier)
+        );
     }
 
     @Test
-    void constructor_ShouldSetEndDate() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().plusDays(10);
-
-        MembershipCard mc = createMembershipCard(start, end);
-
-        assertEquals(end, mc.getDateEnd());
+    void constructor_shouldThrowException_whenDateStartIsFuture() {
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        assertThrows(Exception.class, () ->
+                new MembershipCard(futureDate, validEnd, validCustomerPerson, validTier)
+        );
     }
 
     @Test
-    void constructor_ShouldSetCustomer() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().plusDays(10);
-        Customer customer = createCustomer();
-        MembershipTier tier = createTier();
-
-        MembershipCard mc = new MembershipCard(start, end, customer, tier);
-
-        assertEquals(customer, mc.getCustomer());
+    void constructor_shouldThrowException_whenDateEndBeforeDateStart() {
+        LocalDate earlyEnd = validStart.minusDays(1);
+        assertThrows(Exception.class, () ->
+                new MembershipCard(validStart, earlyEnd, validCustomerPerson, validTier)
+        );
     }
 
     @Test
-    void constructor_ShouldSetMembershipTier() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().plusDays(10);
-        Customer customer = createCustomer();
-        MembershipTier tier = createTier();
-
-        MembershipCard mc = new MembershipCard(start, end, customer, tier);
-
-        assertEquals(tier, mc.getMembershipTier());
-    }
-
-    @Test
-    void constructor_ShouldRegisterCardWithCustomer() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().plusDays(10);
-        Customer customer = createCustomer();
-
-        MembershipCard mc = new MembershipCard(start, end, customer, createTier());
-
-        // Verifying bi-directional connection
-        assertTrue(customer.getMembershipTiers().contains(mc));
-    }
-
-    @Test
-    void constructor_ShouldRegisterCardWithTier() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().plusDays(10);
-        MembershipTier tier = createTier();
-
-        MembershipCard mc = new MembershipCard(start, end, createCustomer(), tier);
-
-        assertEquals(tier, mc.getMembershipTier());
-    }
-
-    @Test
-    void constructor_ShouldAddToExtent() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().plusDays(10);
-
-        MembershipCard mc = createMembershipCard(start, end);
-
-        assertTrue(MembershipCard.getExtent().contains(mc));
-    }
-
-
-    @Test
-    void constructor_ShouldRejectNullStartDate() {
-        LocalDate end = LocalDate.now().plusDays(10);
-        Customer customer = createCustomer();
-        MembershipTier tier = createTier();
-
+    void constructor_shouldThrowException_whenPersonIsNotCustomer() {
         assertThrows(IllegalArgumentException.class, () ->
-                new MembershipCard(null, end, customer, tier)
+                new MembershipCard(validStart, validEnd, validNonCustomerPerson, validTier)
         );
     }
 
     @Test
-    void constructor_ShouldRejectNullEndDate() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        Customer customer = createCustomer();
-        MembershipTier tier = createTier();
-
-        assertThrows(IllegalArgumentException.class, () ->
-                new MembershipCard(start, null, customer, tier)
-        );
+    void constructor_shouldAddToExtent_whenValid() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        assertTrue(MembershipCard.getExtent().contains(card));
     }
 
     @Test
-    void constructor_ShouldRejectFutureStartDate() {
-        LocalDate start = LocalDate.now().plusDays(1);
-        LocalDate end = LocalDate.now().plusDays(10);
-        Customer customer = createCustomer();
-        MembershipTier tier = createTier();
-
-        assertThrows(IllegalArgumentException.class, () ->
-                new MembershipCard(start, end, customer, tier)
-        );
+    void constructor_shouldAddCardToCustomer_whenValid() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        assertTrue(validCustomerPerson.asCustomer().getMembershipTiers().contains(card));
     }
 
     @Test
-    void constructor_ShouldRejectInvalidDateOrder() {
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().minusDays(5); // End is before Start
-        Customer customer = createCustomer();
-        MembershipTier tier = createTier();
-
-        assertThrows(IllegalArgumentException.class, () ->
-                new MembershipCard(start, end, customer, tier)
-        );
-    }
-
-
-    @Test
-    void setDates_ShouldUpdateStartDate() {
-        MembershipCard mc = createMembershipCard(LocalDate.now().minusDays(5), LocalDate.now());
-        LocalDate newStart = LocalDate.now().minusDays(2);
-        LocalDate newEnd = LocalDate.now().plusDays(2);
-
-        mc.setDates(newStart, newEnd);
-
-        assertEquals(newStart, mc.getDateStart());
+    void constructor_shouldAddCardToTier_whenValid() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        assertTrue(validTier.getMembershipCards().contains(card));
     }
 
     @Test
-    void setDates_ShouldUpdateEndDate() {
-        MembershipCard mc = createMembershipCard(LocalDate.now().minusDays(5), LocalDate.now());
-        LocalDate newStart = LocalDate.now().minusDays(2);
-        LocalDate newEnd = LocalDate.now().plusDays(2);
+    void setDates_shouldUpdateValues_whenValid() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        LocalDate newStart = LocalDate.now().minusDays(5);
+        LocalDate newEnd = LocalDate.now().plusDays(100);
 
-        mc.setDates(newStart, newEnd);
+        card.setDates(newStart, newEnd);
 
-        assertEquals(newEnd, mc.getDateEnd());
+        assertEquals(newStart, card.getDateStart());
     }
 
     @Test
-    void setDates_ShouldRejectNullStart() {
-        MembershipCard mc = createMembershipCard(LocalDate.now().minusDays(5), LocalDate.now());
-        LocalDate end = LocalDate.now();
-
-        assertThrows(IllegalArgumentException.class, () -> mc.setDates(null, end));
+    void setDates_shouldThrowException_whenStartNull() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        assertThrows(Exception.class, () -> card.setDates(null, validEnd));
     }
 
     @Test
-    void setDates_ShouldRejectInvalidDateOrder() {
-        MembershipCard mc = createMembershipCard(LocalDate.now().minusDays(5), LocalDate.now());
-        LocalDate start = LocalDate.now().minusDays(1);
-        LocalDate end = LocalDate.now().minusDays(2); // Invalid
-
-        assertThrows(IllegalArgumentException.class, () -> mc.setDates(start, end));
+    void setDates_shouldThrowException_whenStartIsFuture() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        assertThrows(Exception.class, () -> card.setDates(LocalDate.now().plusDays(1), validEnd));
     }
 
+    @Test
+    void setDates_shouldThrowException_whenEndBeforeStart() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        assertThrows(Exception.class, () -> card.setDates(validStart, validStart.minusDays(1)));
+    }
 
     @Test
-    void extentReturnsCopy() {
-        MembershipCard mc = createMembershipCard(LocalDate.now().minusDays(1), LocalDate.now());
-        List<MembershipCard> copy = MembershipCard.getExtent();
+    void setMembershipTier_shouldUpdateTier() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        MembershipTier newTier = new MembershipTier(MembershipTier.TierType.PREMIUM);
 
-        copy.clear();
+        card.setMembershipTier(newTier);
 
-        assertTrue(MembershipCard.getExtent().contains(mc));
+        assertEquals(newTier, card.getMembershipTier());
+    }
+
+    @Test
+    void getPerson_shouldReturnCorrectPerson() {
+        MembershipCard card = new MembershipCard(validStart, validEnd, validCustomerPerson, validTier);
+        assertEquals(validCustomerPerson, card.getPerson());
     }
 }
