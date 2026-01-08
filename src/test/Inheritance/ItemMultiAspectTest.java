@@ -25,15 +25,13 @@ class ItemMultiAspectTest {
 
     @BeforeEach
     void setUp() {
-        materials = List.of("Cotton", "Polyester");
-        colors = List.of("Red", "Blue");
-
-        // Setup Variants using the inner classes defined in your code
+        materials = List.of("Cotton");
+        colors = List.of("Red");
         shirtVariant = new ClothingItem.Shirt(SleeveLength.LONG, Fit.SLIM);
         bootVariant = new Footwear.Boot(true);
     }
 
-    //in item the edition field is private so there is no way to access the field.
+    // for private field access
     private Object getPrivateEditionField(Item item) {
         try {
             Field field = Item.class.getDeclaredField("edition");
@@ -44,90 +42,85 @@ class ItemMultiAspectTest {
         }
     }
 
-    // Clothing + Standard Edition
+    // clothing + standard edition
 
     @Test
     void constructor_ShouldInitializeStandardEdition_WhenStandardDataProvided() {
-        // Arrange
         ClothingItem item = new ClothingItem(
                 "T-Shirt", "Nike", 50.0, 100, materials, colors,
                 ClothingSize.L, shirtVariant,
                 LocalDate.now(), "Summer Season"
         );
 
-        // Act
         Object edition = getPrivateEditionField(item);
 
-        // Assert
         assertTrue(edition instanceof Item.StandardEditionInfo);
     }
 
-    // Clothing + Limited Edition
+    // clothing + limited edition
 
     @Test
-    void constructor_ShouldCreateClothingWithLimitedEdition() {
-        LocalDate releaseDate = LocalDate.now();
-        int totalProduced = 500;
-
+    void constructor_ShouldInitializeLimitedEdition_WhenLimitedDataProvided() {
         ClothingItem item = new ClothingItem(
                 "T-Shirt", "Supreme", 150.0, 10, materials, colors,
                 ClothingSize.L, shirtVariant,
-                releaseDate, totalProduced
+                LocalDate.now(), 500
         );
 
-        assertTrue(item.getEdition() instanceof Item.LimitedEditionInfo);
+        Object edition = getPrivateEditionField(item);
+
+        assertTrue(edition instanceof Item.LimitedEditionInfo);
     }
 
-    // Footwear + Standard Edition
+    // footwear + standard edition
 
     @Test
-    void constructor_ShouldCreateFootwearWithStandardEdition() {
-        LocalDate productionDate = LocalDate.now();
-        String season = "Winter 2024";
-
+    void constructor_Footwear_ShouldInitializeStandardEdition() {
         Footwear item = new Footwear(
                 "Boots", "Timberland", 120.0, 50, materials, colors,
                 42.0, bootVariant,
-                productionDate, season
+                LocalDate.now(), "Winter Season"
         );
 
-        assertTrue(item.getEdition() instanceof Item.StandardEditionInfo);
+        Object edition = getPrivateEditionField(item);
+
+        assertTrue(edition instanceof Item.StandardEditionInfo);
     }
 
-    // Footwear + Limited Edition
+    // footwear + limited edition
 
     @Test
-    void constructor_ShouldCreateFootwearWithLimitedEdition() {
-        LocalDate releaseDate = LocalDate.now();
-        int totalProduced = 100;
-
+    void constructor_Footwear_ShouldInitializeLimitedEdition() {
         Footwear item = new Footwear(
                 "Yeezy", "Adidas", 300.0, 5, materials, colors,
                 42.0, bootVariant,
-                releaseDate, totalProduced
+                LocalDate.now(), 100
         );
 
-        assertTrue(item.getEdition() instanceof Item.LimitedEditionInfo);
+        Object edition = getPrivateEditionField(item);
+
+        assertTrue(edition instanceof Item.LimitedEditionInfo);
     }
 
-    // Disjoint
+    // disjoint
 
     @Test
-    void edition_ShouldBeImmutable_AndNotSwitchable() {
+    void disjoint_StandardConstructor_ShouldNeverCreateLimitedEdition() {
         ClothingItem item = new ClothingItem(
                 "T-Shirt", "Nike", 50.0, 100, materials, colors,
                 ClothingSize.L, shirtVariant,
-                LocalDate.now(), "Season"
+                LocalDate.now(), "Summer Season"
         );
 
-        // disjoint: standard item should not be limited.
-        assertFalse(item.getEdition() instanceof Item.LimitedEditionInfo);
+        Object edition = getPrivateEditionField(item);
+
+        assertFalse(edition instanceof Item.LimitedEditionInfo);
     }
 
 
     @Test
     void constructor_Clothing_ShouldThrowException_WhenPriceBelowMin() {
-        double invalidPrice = 30.0; // Min is 40
+        double invalidPrice = 30.0; // Min is 40.0
 
         assertThrows(IllegalArgumentException.class, () ->
                 new ClothingItem(
@@ -138,9 +131,10 @@ class ItemMultiAspectTest {
         );
     }
 
+
     @Test
     void constructor_Footwear_ShouldThrowException_WhenPriceBelowMin() {
-        double invalidPrice = 50.0; // Min is 60
+        double invalidPrice = 50.0; // Min is 60.0
 
         assertThrows(IllegalArgumentException.class, () ->
                 new Footwear(
