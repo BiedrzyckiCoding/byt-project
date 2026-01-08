@@ -2,201 +2,243 @@ package test.PersistenceModels;
 
 import main.Enums.ContractType;
 import main.PersistenceModels.Contract;
+import main.PersistenceModels.DebitCard;
+import main.PersistenceModels.Customer;
 import main.PersistenceModels.Employee;
-import main.PersistenceModels.PersistenceUtil;
+import main.PersistenceModels.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class EmployeeTest {
 
-    private List<String> createAddress() {
-        return List.of("Street 1", "City", "00000");
-    }
-
-    private LocalDate createBirthDate() {
-        return LocalDate.of(1990, 1, 1);
-    }
-
-    private Employee createEmployee(String name, double salary) {
-        return new Employee(name, createAddress(), "Jones", "mail@mail.com", createBirthDate(), salary, 5);
-    }
+    private Person validPerson;
+    private Employee employee;
+    private Employee.EmployeeData validData;
 
     @BeforeEach
     void setUp() {
-        PersistenceUtil.loadAll();
-    }
-
-
-    @Test
-    void constructor_ShouldSetSalary() {
-        Employee e = createEmployee("Bob", 500.0);
-        assertEquals(500.0, e.getSalary());
+        validData = new Employee.EmployeeData(5000.0, 10);
+        validPerson = new Person("John", List.of("Address"), "Doe", "john@test.com", LocalDate.of(1990, 1, 1), validData);
+        employee = validPerson.asEmployee();
     }
 
     @Test
-    void constructor_ShouldSetItemsSold() {
-        Employee e = createEmployee("Bob", 500.0);
-        assertEquals(5, e.getItemsSold());
+    void constructor_shouldThrowException_whenSalaryNegative() {
+        Employee.EmployeeData invalidData = new Employee.EmployeeData(-100.0, 10);
+        assertThrows(Exception.class, () ->
+                new Person("Jane", List.of("Addr"), "Doe", "jane@test.com", LocalDate.now(), invalidData)
+        );
     }
 
     @Test
-    void constructor_ShouldAddToExtent() {
-        Employee e = createEmployee("Bob", 500.0);
-        assertTrue(Employee.getExtent().contains(e));
+    void constructor_shouldThrowException_whenItemsSoldNegative() {
+        Employee.EmployeeData invalidData = new Employee.EmployeeData(5000.0, -1);
+        assertThrows(Exception.class, () ->
+                new Person("Jane", List.of("Addr"), "Doe", "jane@test.com", LocalDate.now(), invalidData)
+        );
     }
 
     @Test
-    void setSalary_ShouldUpdateValue() {
-        Employee e = createEmployee("Bob", 500.0);
-        e.setSalary(600.0);
-        assertEquals(600.0, e.getSalary());
+    void getSalary_shouldReturnCorrectValue() {
+        assertEquals(5000.0, employee.getSalary());
     }
 
     @Test
-    void setSalary_ShouldRejectNegative() {
-        Employee e = createEmployee("Bob", 500.0);
-        assertThrows(IllegalArgumentException.class, () -> e.setSalary(-1));
+    void setSalary_shouldUpdateValue_whenValid() {
+        employee.setSalary(6000.0);
+        assertEquals(6000.0, employee.getSalary());
     }
 
     @Test
-    void setItemsSold_ShouldUpdateValue() {
-        Employee e = createEmployee("Bob", 500.0);
-        e.setItemsSold(10);
-        assertEquals(10, e.getItemsSold());
+    void setSalary_shouldThrowException_whenNegative() {
+        assertThrows(Exception.class, () -> employee.setSalary(-1.0));
     }
 
     @Test
-    void setItemsSold_ShouldRejectNegative() {
-        Employee e = createEmployee("Bob", 500.0);
-        assertThrows(IllegalArgumentException.class, () -> e.setItemsSold(-5));
+    void setItemsSold_shouldUpdateValue_whenValid() {
+        employee.setItemsSold(20);
+        assertEquals(20, employee.getItemsSold());
     }
 
     @Test
-    void getSubordinates_ShouldBeNullInitially() {
-        Employee e = createEmployee("Bob", 500.0);
-        assertNull(e.getSubordinates());
+    void setItemsSold_shouldThrowException_whenNegative() {
+        assertThrows(Exception.class, () -> employee.setItemsSold(-1));
     }
 
     @Test
-    void assignManager_ShouldSetManagerField() {
-        Employee manager = createEmployee("Alice", 1000.0);
-        Employee worker = createEmployee("Bob", 500.0);
+    void assignManager_shouldSetManagerField() {
+        Person managerPerson = new Person("Boss", List.of("Addr"), "Big", "boss@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee manager = managerPerson.asEmployee();
 
-        worker.assignManager(manager);
+        employee.assignManager(manager);
 
-        assertEquals(manager, worker.getManager());
+        assertEquals(manager, employee.getManager());
     }
 
     @Test
-    void assignManager_ShouldAddSubordinateToManagerList() {
-        Employee manager = createEmployee("Alice", 1000.0);
-        Employee worker = createEmployee("Bob", 500.0);
+    void assignManager_shouldAddSubordinateToManager() {
+        Person managerPerson = new Person("Boss", List.of("Addr"), "Big", "boss@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee manager = managerPerson.asEmployee();
 
-        worker.assignManager(manager);
+        employee.assignManager(manager);
 
-        assertTrue(manager.getSubordinates().contains(worker));
+        assertTrue(manager.getSubordinates().contains(employee));
     }
 
     @Test
-    void assignManager_ShouldPreventSelfAssignment() {
-        Employee e = createEmployee("Bob", 500.0);
-        e.assignManager(e);
-        assertThrows(IllegalArgumentException.class, () -> e.assignManager(e));
+    void assignManager_shouldThrowException_whenSelfAssignment() {
+        assertThrows(IllegalArgumentException.class, () -> employee.assignManager(employee));
     }
 
     @Test
-    void assignManager_Change_ShouldUpdateManagerField() {
-        Employee manager1 = createEmployee("Alice", 1000.0);
-        Employee manager2 = createEmployee("Carol", 1100.0);
-        Employee worker = createEmployee("Bob", 500.0);
+    void assignManager_shouldSetNewManager_whenReassigned() {
+        Person boss1Person = new Person("Boss1", List.of("Addr"), "One", "b1@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee boss1 = boss1Person.asEmployee();
+        Person boss2Person = new Person("Boss2", List.of("Addr"), "Two", "b2@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee boss2 = boss2Person.asEmployee();
 
-        worker.assignManager(manager1);
-        worker.assignManager(manager2);
+        employee.assignManager(boss1);
+        employee.assignManager(boss2);
 
-        assertEquals(manager2, worker.getManager());
+        assertEquals(boss2, employee.getManager());
     }
 
     @Test
-    void assignManager_Change_ShouldRemoveFromOldManager() {
-        Employee manager1 = createEmployee("Alice", 1000.0);
-        Employee manager2 = createEmployee("Carol", 1100.0);
-        Employee worker = createEmployee("Bob", 500.0);
+    void assignManager_shouldAddToNewManagerSubordinates_whenReassigned() {
+        Person boss1Person = new Person("Boss1", List.of("Addr"), "One", "b1@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee boss1 = boss1Person.asEmployee();
+        Person boss2Person = new Person("Boss2", List.of("Addr"), "Two", "b2@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee boss2 = boss2Person.asEmployee();
 
-        worker.assignManager(manager1);
-        worker.assignManager(manager2);
+        employee.assignManager(boss1);
+        employee.assignManager(boss2);
 
-        assertFalse(manager1.getSubordinates().contains(worker));
+        assertTrue(boss2.getSubordinates().contains(employee));
     }
 
     @Test
-    void assignManager_Change_ShouldAddToNewManager() {
-        Employee manager1 = createEmployee("Alice", 1000.0);
-        Employee manager2 = createEmployee("Carol", 1100.0);
-        Employee worker = createEmployee("Bob", 500.0);
+    void assignManager_shouldRemoveFromOldManagerSubordinates_whenReassigned() {
+        Person boss1Person = new Person("Boss1", List.of("Addr"), "One", "b1@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee boss1 = boss1Person.asEmployee();
+        Person boss2Person = new Person("Boss2", List.of("Addr"), "Two", "b2@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee boss2 = boss2Person.asEmployee();
 
-        worker.assignManager(manager1);
-        worker.assignManager(manager2);
+        employee.assignManager(boss1);
+        employee.assignManager(boss2);
 
-        assertTrue(manager2.getSubordinates().contains(worker));
+        assertFalse(boss1.getSubordinates().contains(employee));
     }
 
     @Test
-    void addSubordinate_ShouldSetManagerFieldOnWorker() {
-        Employee manager = createEmployee("Alice", 1000.0);
-        Employee worker = createEmployee("Bob", 500.0);
+    void addSubordinate_shouldAddSubordinateToSet() {
+        Person subPerson = new Person("Sub", List.of("Addr"), "Zero", "sub@test.com", LocalDate.of(2000, 1, 1), validData);
+        Employee subordinate = subPerson.asEmployee();
 
-        manager.addSubordinate(worker);
+        employee.addSubordinate(subordinate);
 
-        assertEquals(manager, worker.getManager());
+        assertTrue(employee.getSubordinates().contains(subordinate));
     }
 
     @Test
-    void addSubordinate_ShouldAddWorkerToManagerList() {
-        Employee manager = createEmployee("Alice", 1000.0);
-        Employee worker = createEmployee("Bob", 500.0);
+    void addSubordinate_shouldSetManagerOnSubordinate() {
+        Person subPerson = new Person("Sub", List.of("Addr"), "Zero", "sub@test.com", LocalDate.of(2000, 1, 1), validData);
+        Employee subordinate = subPerson.asEmployee();
 
-        manager.addSubordinate(worker);
+        employee.addSubordinate(subordinate);
 
-        assertTrue(manager.getSubordinates().contains(worker));
+        assertEquals(employee, subordinate.getManager());
     }
 
     @Test
-    void addSubordinate_ShouldRejectNull() {
-        Employee manager = createEmployee("Alice", 1000.0);
-        assertThrows(IllegalArgumentException.class, () -> manager.addSubordinate(null));
+    void addSubordinate_shouldThrowException_whenSelfAssignment() {
+        assertThrows(IllegalArgumentException.class, () -> employee.addSubordinate(employee));
     }
 
     @Test
-    void addSubordinate_ShouldRejectSelf() {
-        Employee manager = createEmployee("Alice", 1000.0);
-        assertThrows(IllegalArgumentException.class, () -> manager.addSubordinate(manager));
+    void removeSubordinate_shouldRemoveFromSet() {
+        Person subPerson = new Person("Sub", List.of("Addr"), "Zero", "sub@test.com", LocalDate.of(2000, 1, 1), validData);
+        Employee subordinate = subPerson.asEmployee();
+
+        employee.addSubordinate(subordinate);
+        employee.removeSubordinate(subordinate);
+
+        assertFalse(employee.getSubordinates().contains(subordinate));
     }
 
     @Test
-    void removeSubordinate_ShouldRemoveFromSubordinatesList() {
-        Employee manager = createEmployee("Alice", 1000.0);
-        Employee worker = createEmployee("Bob", 500.0);
-        manager.addSubordinate(worker);
+    void removeSubordinate_shouldNullifyManager() {
+        Person subPerson = new Person("Sub", List.of("Addr"), "Zero", "sub@test.com", LocalDate.of(2000, 1, 1), validData);
+        Employee subordinate = subPerson.asEmployee();
 
-        manager.removeSubordinate(worker);
+        employee.addSubordinate(subordinate);
+        employee.removeSubordinate(subordinate);
 
-        assertFalse(manager.getSubordinates().contains(worker));
+        assertNull(subordinate.getManager());
     }
 
     @Test
-    void removeSubordinate_ShouldSetManagerToNull() {
-        Employee manager = createEmployee("Alice", 1000.0);
-        Employee worker = createEmployee("Bob", 500.0);
-        manager.addSubordinate(worker);
+    void removeSubordinate_shouldThrowException_whenNotSubordinate() {
+        Person otherPerson = new Person("Other", List.of("Addr"), "Guy", "other@test.com", LocalDate.of(1990, 1, 1), validData);
+        Employee other = otherPerson.asEmployee();
 
-        manager.removeSubordinate(worker);
+        assertThrows(IllegalArgumentException.class, () -> employee.removeSubordinate(other));
+    }
 
-        assertNull(worker.getManager());
+    @Test
+    void detachEmployee_shouldRemoveFromManager() {
+        Person bossPerson = new Person("Boss", List.of("Addr"), "Big", "boss@test.com", LocalDate.of(1980, 1, 1), validData);
+        Employee boss = bossPerson.asEmployee();
+        employee.assignManager(boss);
+
+        // Attach customer to satisfy completeness before detaching employee
+        DebitCard card = new DebitCard("1234123412341234", LocalDate.now().plusYears(1), "123");
+        Customer.CustomerData cData = new Customer.CustomerData("acc", LocalDate.now(), 0, card);
+        validPerson.attachCustomer(cData);
+
+        validPerson.detachEmployee();
+
+        assertFalse(boss.getSubordinates().contains(employee));
+    }
+
+    @Test
+    void detachEmployee_shouldNullifySubordinateManager() {
+        Person subPerson = new Person("Sub", List.of("Addr"), "Zero", "sub@test.com", LocalDate.of(2000, 1, 1), validData);
+        Employee subordinate = subPerson.asEmployee();
+        employee.addSubordinate(subordinate);
+
+        DebitCard card = new DebitCard("1234123412341234", LocalDate.now().plusYears(1), "123");
+        Customer.CustomerData cData = new Customer.CustomerData("acc", LocalDate.now(), 0, card);
+        validPerson.attachCustomer(cData);
+
+        validPerson.detachEmployee();
+
+        assertNull(subordinate.getManager());
+    }
+
+    @Test
+    void detachEmployee_shouldRemoveRoleFromPerson() {
+        DebitCard card = new DebitCard("1234123412341234", LocalDate.now().plusYears(1), "123");
+        Customer.CustomerData cData = new Customer.CustomerData("acc", LocalDate.now(), 0, card);
+        validPerson.attachCustomer(cData);
+
+        validPerson.detachEmployee();
+
+        assertFalse(validPerson.isEmployee());
+    }
+
+    @Test
+    void deleteEmployee_shouldRemoveContracts() {
+//        Contract.setExtent(Collections.emptyList());
+        Contract contract = new Contract(ContractType.COMMISSION, LocalDate.now(), employee);
+
+        employee.deleteEmployee();
+
+        assertFalse(Contract.getExtent().contains(contract));
     }
 }

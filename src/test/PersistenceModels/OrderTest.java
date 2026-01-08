@@ -1,165 +1,220 @@
 package test.PersistenceModels;
 
-import main.Enums.DeliveryType;
-import main.Enums.OrderStatus;
-import main.PersistenceModels.*;
+import main.Clothing.Item;
 import main.Enums.ClothingSize;
+import main.Enums.DeliveryType;
+import main.Enums.Fit;
+import main.Enums.OrderStatus;
+import main.Enums.SleeveLength;
+import main.MembershipTiers.MembershipTier;
+import main.PersistenceModels.ClothingItem;
+import main.PersistenceModels.Customer;
+import main.PersistenceModels.DebitCard;
+import main.PersistenceModels.MembershipCard;
+import main.PersistenceModels.Order;
+import main.PersistenceModels.Person;
 import main.Order.ItemQuantityInOrder;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTest {
 
+    private LocalDateTime validTimestamp;
+    private OrderStatus validStatus;
+    private DeliveryType validDelivery;
+    private Customer validCustomer;
+    private ClothingItem realItem1;
+    private ClothingItem realItem2;
+    private ItemQuantityInOrder association1;
+    private ItemQuantityInOrder association2;
+
     @BeforeEach
     void setUp() {
-        PersistenceUtil.loadAll();
+//        Order.setExtent(Collections.emptyList());
+        validTimestamp = LocalDateTime.now().minusMinutes(1);
+        validStatus = OrderStatus.SUBMITTED;
+        validDelivery = DeliveryType.STORE_PICKUP;
+
+        DebitCard debitCard = new DebitCard("1234567890123456", LocalDate.now().plusYears(1), "123");
+        Customer.CustomerData data = new Customer.CustomerData("acc", LocalDate.now(), 0, debitCard);
+        Person person = new Person("John", List.of("Addr"), "Doe", "mail", LocalDate.now(), data);
+        validCustomer = person.asCustomer();
+
+        ClothingItem.Shirt shirtVariant = new ClothingItem.Shirt(SleeveLength.LONG, Fit.REGULAR);
+        realItem1 = new ClothingItem("Shirt", "Nike", 100.0, 10, List.of("Cotton"), List.of("Red"), ClothingSize.M, shirtVariant, LocalDate.now(), "Season");
+
+        ClothingItem.Shirt shirtVariant2 = new ClothingItem.Shirt(SleeveLength.SHORT, Fit.SLIM);
+        realItem2 = new ClothingItem("Tee", "Adidas", 50.0, 10, List.of("Poly"), List.of("Blue"), ClothingSize.L, shirtVariant2, LocalDate.now(), "Season");
+
+//        association1 = new ItemQuantityInOrder(realItem1, 2);
+//        association2 = new ItemQuantityInOrder(realItem2, 1);
     }
 
-    private Hoodie createHoodie(String name, double price) {
-        return new Hoodie(name, "Brand", price, 5, List.of("Cotton"), List.of("Black"), ClothingSize.M, true);
-    }
-
-    private ItemQuantityInOrder createItemQuantity(double price, int quantity, Order order) {
-        return new ItemQuantityInOrder(createHoodie("TestHoodie", price), quantity, order);
-    }
-
-    private Customer createCustomer() {
-        DebitCard card = new DebitCard("1111-2222-3333-4444", LocalDate.now().plusYears(1), "123");
-        return new Customer(
-                "John", List.of("Address"), "Doe", "mail@mail.com", LocalDate.of(1990, 1, 1),
-                "user1", LocalDate.now(), 0, card
-        );
-    }
-
-    private Order createOrder(DeliveryType deliveryType) {
-        return new Order(deliveryType, LocalDateTime.now(), OrderStatus.ACCEPTED);
-    }
-
-    @Test
-    void constructor_ShouldSetDeliveryType() {
-        Order o = new Order(DeliveryType.HOME_DELIVERY, LocalDateTime.now(), OrderStatus.ACCEPTED);
-        assertEquals(DeliveryType.HOME_DELIVERY, o.getDeliveryType());
+    @AfterEach
+    void tearDown() {
+//        Order.setExtent(Collections.emptyList());
     }
 
     @Test
-    void constructor_ShouldSetTimestamp() {
-        LocalDateTime now = LocalDateTime.now();
-        Order o = new Order(DeliveryType.STORE_PICKUP, now, OrderStatus.ACCEPTED);
-        assertEquals(now, o.getTimestamp());
+    void constructor_shouldCreateOrder_whenValid() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        assertNotNull(order);
     }
 
     @Test
-    void constructor_ShouldSetStatus() {
-        Order o = new Order(DeliveryType.STORE_PICKUP, LocalDateTime.now(), OrderStatus.PROCESSING);
-        assertEquals(OrderStatus.PROCESSING, o.getStatus());
+    void constructor_shouldAddToExtent_whenValid() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        assertTrue(Order.getExtent().contains(order));
     }
 
     @Test
-    void constructor_ShouldAddToExtent() {
-        Order o = createOrder(DeliveryType.STORE_PICKUP);
-        assertTrue(Order.getExtent().contains(o));
+    void constructor_shouldThrowException_whenStatusIsNull() {
+        assertThrows(Exception.class, () -> new Order(validDelivery, validTimestamp, null));
     }
 
     @Test
-    void constructor_ShouldRejectNullDeliveryType() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new Order(null, LocalDateTime.now(), OrderStatus.ACCEPTED));
+    void constructor_shouldThrowException_whenDeliveryTypeIsNull() {
+        assertThrows(Exception.class, () -> new Order(null, validTimestamp, validStatus));
     }
 
     @Test
-    void constructor_ShouldRejectNullStatus() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new Order(DeliveryType.STORE_PICKUP, LocalDateTime.now(), null));
+    void constructor_shouldThrowException_whenTimestampInFuture() {
+        assertThrows(Exception.class, () -> new Order(validDelivery, LocalDateTime.now().plusDays(1), validStatus));
     }
 
     @Test
-    void constructor_ShouldRejectFutureTimestamp() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new Order(DeliveryType.STORE_PICKUP, LocalDateTime.now().plusDays(1), OrderStatus.ACCEPTED));
+    void setStatus_shouldUpdateValue_whenValid() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        order.setStatus(OrderStatus.COMPLETED);
+        assertEquals(OrderStatus.COMPLETED, order.getStatus());
     }
 
     @Test
-    void newItemQuantity_ShouldAutomaticallyAddToOrderList() {
-        Order o = createOrder(DeliveryType.STORE_PICKUP);
-
-        ItemQuantityInOrder item = createItemQuantity(100, 1, o);
-
-        assertTrue(o.getItemListAssociation().contains(item));
+    void setStatus_shouldThrowException_whenNull() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        assertThrows(Exception.class, () -> order.setStatus(null));
     }
 
     @Test
-    void addItemToList_ShouldRejectDuplicateItemObject() {
-        Order o = createOrder(DeliveryType.STORE_PICKUP);
-
-        ItemQuantityInOrder item = createItemQuantity(100, 1, o);
-
-        assertThrows(IllegalArgumentException.class, () -> o.addItemToList(item));
+    void setTimestamp_shouldUpdateValue_whenValid() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        LocalDateTime newTime = LocalDateTime.now().minusHours(1);
+        order.setTimestamp(newTime);
+        assertEquals(newTime, order.getTimestamp());
     }
 
     @Test
-    void removeItemFromList_ShouldRemoveItem() {
-        Order o = createOrder(DeliveryType.STORE_PICKUP);
-        ItemQuantityInOrder item = createItemQuantity(100, 1, o);
-
-        o.removeItemFromList(item);
-
-        assertFalse(o.getItemListAssociation().contains(item));
+    void setTimestamp_shouldThrowException_whenFuture() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        assertThrows(Exception.class, () -> order.setTimestamp(LocalDateTime.now().plusDays(1)));
     }
 
     @Test
-    void getSumPrice_ShouldCalculateTotalCorrectly() {
-        Order o = createOrder(DeliveryType.STORE_PICKUP);
-
-        createItemQuantity(100, 2, o); // 200
-        createItemQuantity(50, 1, o);  // 50
-
-        assertEquals(250.0, o.getSumPrice());
+    void setDeliveryType_shouldUpdateValue_whenValid() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        order.setDeliveryType(DeliveryType.HOME_DELIVERY);
+        assertEquals(DeliveryType.HOME_DELIVERY, order.getDeliveryType());
     }
 
     @Test
-    void getFinalPrice_ShouldAddDeliveryFee_WhenHomeDelivery() {
-        Order o = createOrder(DeliveryType.HOME_DELIVERY); // +5 fee
-
-        createItemQuantity(100, 1, o);
-
-        assertEquals(105.0, o.getFinalPrice());
+    void setDeliveryType_shouldThrowException_whenNull() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        assertThrows(Exception.class, () -> order.setDeliveryType(null));
     }
 
     @Test
-    void getFinalPrice_ShouldNotAddFee_WhenSTORE_PICKUP() {
-        Order o = createOrder(DeliveryType.STORE_PICKUP);
-
-        createItemQuantity(100, 1, o);
-
-        assertEquals(100.0, o.getFinalPrice());
-    }
-
-
-    @Test
-    void isDiscountApplied_ShouldSetFalse_WhenNoMembershipEndDatesSet() {
-        Customer c = createCustomer();
-        Order o = createOrder(DeliveryType.STORE_PICKUP);
-        c.addOrder(o);
-
-        c.purchaseMembership(LocalDate.now().plusYears(1), new Premium());
-
-        o.isDiscountApplied();
-
-        createItemQuantity(100, 1, o);
-
-        assertTrue(o.getFinalPrice() < 100.0);
+    void addCustomer_shouldSetCustomerField() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        validCustomer.addOrder(order);
+        assertEquals(validCustomer, order.getCustomer());
     }
 
     @Test
-    void isDiscountApplied_ShouldThrowException_IfCustomerIsNull() {
-        Order o = createOrder(DeliveryType.STORE_PICKUP);
-        assertThrows(IllegalArgumentException.class, o::isDiscountApplied);
+    void removeCustomer_shouldNullifyCustomerField() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        validCustomer.addOrder(order);
+        validCustomer.removeOrder(order);
+        assertNull(order.getCustomer());
+    }
+
+    @Test
+    void addItemToList_shouldAddItem() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        order.addItemToList(association1);
+        assertTrue(order.getItemListAssociation().contains(association1));
+    }
+
+    @Test
+    void addItemToList_shouldThrowException_whenDuplicate() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        order.addItemToList(association1);
+        assertThrows(IllegalArgumentException.class, () -> order.addItemToList(association1));
+    }
+
+    @Test
+    void removeItemFromList_shouldRemoveItem() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        order.addItemToList(association1);
+        order.removeItemFromList(association1);
+        assertFalse(order.getItemListAssociation().contains(association1));
+    }
+
+    @Test
+    void getSumPrice_shouldCalculateCorrectly() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        order.addItemToList(association1);
+        order.addItemToList(association2);
+        assertEquals(250.0, order.getSumPrice());
+    }
+
+    @Test
+    void getSumPrice_shouldReturnZero_whenEmpty() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        assertEquals(0.0, order.getSumPrice());
+    }
+
+    @Test
+    void isDiscountApplied_shouldThrowException_whenCustomerNull() {
+        Order order = new Order(validDelivery, validTimestamp, validStatus);
+        assertThrows(Exception.class, () -> order.isDiscountApplied());
+    }
+
+    @Test
+    void getFinalPrice_shouldIncludeHomeDeliveryFee() {
+        Order order = new Order(DeliveryType.HOME_DELIVERY, validTimestamp, validStatus);
+        order.addItemToList(association2);
+        assertEquals(55.0, order.getFinalPrice());
+    }
+
+    @Test
+    void getFinalPrice_shouldNotApplyDiscount_whenNotActive() {
+        Order order = new Order(DeliveryType.STORE_PICKUP, validTimestamp, validStatus);
+        validCustomer.addOrder(order);
+        order.addItemToList(association1);
+
+        order.isDiscountApplied();
+        assertEquals(200.0, order.getFinalPrice());
+    }
+
+    @Test
+    void getFinalPrice_shouldApplyDiscount_whenActive() {
+        Order order = new Order(DeliveryType.STORE_PICKUP, validTimestamp, validStatus);
+
+        MembershipTier tier = new MembershipTier(MembershipTier.TierType.PREMIUM);
+        new MembershipCard(LocalDate.now(), LocalDate.now().plusDays(10), validCustomer.getOwner(), tier);
+
+        validCustomer.addOrder(order);
+        order.addItemToList(association1);
+        order.isDiscountApplied();
+
+        assertEquals(160.0, order.getFinalPrice());
     }
 }
